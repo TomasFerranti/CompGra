@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title> Composição de Camadas </title>
+<link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+
+<script type="text/javascript" async
+src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async>
+MathJax.Hub.Config({
+tex2jax: {
+inlineMath: [['$','$'], ['\\(','\\)']],
+processEscapes: true
+}
+});
+</script>
+
+<h1> Composição de Camadas</h1>
+<h2> Trabalho realizado para a Avaliação 1 da disciplina Introdução à Computação Gráfica</h2>
+
+<div id="imagens">
+<figure>
+	<canvas id="imagem1" width="1100" height="500"></canvas>
+</figure>
+</div>
+
+<div id="controle">
+&nbsp; A maioria das imagens necessita de uma <a href="https://chrome.google.com/webstore/detail/allow-control-allow-origi/nlfbmbojpeacfghkpbjhddihlkkiljbi" target="_blank">extensão de CORS policy</a> para aparecer.
+<button onclick="updateFigure1()">Clique aqui para modificar a imagem 1</button>
+<button onclick="updateFigure2()">Clique aqui para modificar a imagem 2</button>
+
+<center>
+<button onclick="swapImages()">Trocar imagens de lugar</button>
+</center>
+
+<form> 
+  <p>&nbsp; Escolha uma das opções de <a href="http://www.deepskycolors.com/archive/2010/04/21/formulas-for-Photoshop-blending-modes.html" target="_blank">operação</a> abaixo:</p>
+  <div>
+    <input type="radio"
+           name="metodo" value="1">
+    <label for="metodo"><a href="#1">Darken</a></label>
+	</div>
+	<div>
+    <input type="radio"
+           name="metodo" value="2">
+    <label for="multiply"><a href="#2">Multiply</a></label>
+	</div>
+	<div>
+	<input type="radio"
+           name="metodo" value="3">
+    <label for="ColorBurn"><a href="#3">Color Burn</a></label>
+	</div>
+	<div>
+	<input type="radio"
+           name="metodo" value="4">
+    <label for="LinearBurn"><a href="#4">Linear Burn</a></label>
+	</div>
+	<div>
+	<input type="radio"
+           name="metodo" value="5">
+    <label for="Lighten"><a href="#5">Lighten</a></label>
+	</div>
+	<div>
+	<input type="radio"
+           name="metodo" value="6">
+    <label for="Screen"><a href="#6">Screen</a></label>
+	</div>
+	<div>
+	<input type="radio"
+           name="metodo" value="7">
+    <label for="ColorDodge"><a href="#7">Color Dodge</a></label>
+	</div>
+	<div>
+	<input type="radio"
+           name="metodo" value="8">
+    <label for="LinearDodge"><a href="#8">Linear Dodge</a></label>
+	</div>
+	<div>
+	<input type="radio"
+           name="metodo" value="9">
+    <label for="Overlay"><a href="#9">Overlay</a></label>
+	</div>
+	<div>
+	<input type="radio"
+           name="metodo" value="10">
+    <label for="SoftLight"><a href="#10">Soft Light</a></label>
+	</div>
+	<div>
+	<input type="radio"
+           name="metodo" value="11">
+    <label for="HardLight"><a href="#11">Hard Light</a></label>
+	</div>
+	<div>
+	<input type="radio"
+           name="metodo" value="12">
+    <label for="VividLight"><a href="#12">Vivid Light</a></label>
+	</div>
+	<div>
+	<input type="radio"
+           name="metodo" value="13">
+    <label for="LinearLight"><a href="#13">Linear Light</a></label>
+	</div>
+	<div>
+	<input type="radio"
+           name="metodo" value="14">
+    <label for="PinLight"><a href="#14">Pin Light</a></label>
+	</div>
+	<div>
+	<input type="radio"
+           name="metodo" value="15">
+    <label for="Difference"><a href="#15">Difference</a></label>
+	</div>
+	<div>
+	<input type="radio"
+           name="metodo" value="16">
+    <label for="Exclusion"><a href="#16">Exclusion</a></label>	
+  </div>
+  <center>
+  <div>
+    <button type="submit">Atualizar operação</button>
+  </div>
+  </center>
+</form>
+
+<center>
+<button onclick="drawFigure3()">Clique aqui para atualizar o resultado</button>
+</center>
+</div>
+
+<div id="imgfinal">
+<figure>
+	<canvas id="imagemFinal" width="1350" height="500"></canvas>
+</figure>
+</div>
+
+<script type="text/javascript" src="script.js">
+</script>
+
+<div id="abobrinha">
+
+<h3>Introdução</h3>
+<p>&nbsp; Uma composição de camadas são operações aplicadas em cada valor RGB de cada pixel encontrado na justaposição de duas ou mais imagens.
+ Neste trabalho, aplicaremos na sobreposição de apenas duas imagens.</p>
+<p>&nbsp; Ao clicar no botão atualizar a imagem, será criado duas novas imagens com áreas de coincidência diferentes.
+ A primeira ocorre entre os pixels $(251\times 500,1\times 500)$ da primeira imagem (esquerda) e $(1\times 250,1\times 500)$ da segunda imagem (direita).
+ A segunda ocorre entre todos os pixels das duas imagens. </p>
+<h3>Tipos de Operações</h3>
+<p>&nbsp; Abaixo segue a explicação de cada operação e seu possível uso ($a$ e $b$ são, respectivamente, valores da imagem $1$ e $2$ reduzidos ao intervalo $[0,1]$).</p>
+
+<ul>
+<li id="1">Darken</li>
+<p>&nbsp; FÓRMULA: $min(a,b)$</p>
+<p>&nbsp; Como o próprio nome diz, é usado para escurecer imagens. Geralmente usado com fundo cinzas escuros de escolha.</p>
+
+<li id="2">Multiply</li>
+<p>&nbsp; FÓRMULA: $a*b$</p>
+<p>&nbsp; O resultado do modo Multiply sempre é uma imagem mais escura, devido a cada valor ser menor que $1$, o produto será menor do que os dois originais. </p>
+
+<li id="3">Color Burn</li>
+<p>&nbsp; FÓRMULA: $1 - \frac{1-a}{b}$</p>
+<p>&nbsp; Esse operador escurece os valores de $b$ aumentando o contraste para refletir a cor de $a$. O quão mais escuro $a$, mais de sua cor é usada.</p>
+
+<li id="4">Linear Burn</li>
+<p>&nbsp; FÓRMULA: $a+b-1$</p>
+<p>&nbsp; O mesmo que inverter cada camada, adicioná-las e inverter o resultado.</p>
+
+<li id="5">Lighten</li>
+<p>&nbsp; FÓRMULA: $max(a,b)$</p>
+<p>&nbsp; Inverso do Darken, ilumina as imagens.</p>
+
+<li id="6">Screen</li>
+<p>&nbsp; FÓRMULA: $1-(1-a)(1-b)$</p>
+<p>&nbsp; O operador Screen inverte os valores, os multiplica, e depois inverte novamente. Esse processo resulta no oposto do modo Multiply, resultando em uma imagem mais clara. </p>
+
+<li id="7">Color Dodge</li>
+<p>&nbsp; FÓRMULA: $\frac{a}{1-b}$</p>
+<p>&nbsp; Dividir $a$ pelo inverso de $b$ deixa os valores de $b$ mais claros proporcionalmente aos valores de $a$, quanto mais claro $b$, mais sua cor afeta $a$. Colocando essa operação com branco sempre resulta em branco. </p>
+
+<li id="8">Linear Dodge</li>
+<p>&nbsp; FÓRMULA: $a+b$</p>
+<p>&nbsp; Tem esse nome devido a caso usado com branco resulta em branco, e caso seja com preto não muda a imagem. Quando $b$ tem uma cor homogênea, esse efeito é equivalente a mudar a saída para essa cor.</p>
+
+<li id="9">Overlay</li>
+<p>&nbsp; FÓRMULA: $(a > 0.5) * (1 - (1-2(a-0.5))(1-b)) + (a <= 0.5) * (2ab)$</p>
+<p>&nbsp; Overlay combina os dois operadores Multiply e Screen. As partes de $b$ onde $a$ é claro fica mais claro, enquanto as partes em que $a$ é escuro fica mais escuro. Áreas de $b$ meio cinzas não são afetadas. </p>
+
+<li id="10">Soft Light</li>
+<p>&nbsp; FÓRMULA: $(b < 0.5) * (2ab+a^2(1-2b)) + (b <= 0.5) * (2a(1-b)+ \sqrt{a}(2b-1))$</p>
+<p>&nbsp; Soft Light é bem próximo a Overlay, apesar de seu nome ser similar a Hard Light. A fórmula acima é usada no Photoshop 2012. Há várias maneiras de aplicar o operador soft light, mas ambos tem resultados similares, que é deixar as sombras mais claras.</p>
+
+<li id="11">Hard Light</li>
+<p>&nbsp; FÓRMULA: $(b > 0.5) * (1 - (1-a)(1-2(b-0.5))) +(b <= 0.5) * (2ab)$</p>
+<p>&nbsp; Hard Light também é uma combinação de Multiply e Screen. Afeta a relação entre $a$ e $b$ de maneira semelhante ao Overlay. Ele é considerado um operador comutativo com relação ao Overlay.</p>
+
+<li id="12">Vivid Light</li>
+<p>&nbsp; FÓRMULA: $(b > 0.5) * (1 - \frac{1-a}{2(b-0.5)}) + (b <= 0.5) * (\frac{a}{1-2b})$</p>
+<p>&nbsp; Esse operador combina Color Dodge e Color Burn. Dodge é aplicado quando os valores de $b$ são maiores que o "meio-cinza", e Burn a valores mais escuros. O contraste perceptível aumenta.</p>
+
+<li id="13">Linear Light</li>
+<p>&nbsp; FÓRMULA: $(b > 0.5) * (a + 2(b-0.5)) + (b <= 0.5) * (a + 2b - 1)$</p>
+<p>&nbsp; Este modo combina Linear Dodge e Linear Burn, reduzindo o contraste.</p>
+
+<li id="14">Pin Light</li>
+<p>&nbsp; FÓRMULA: $(b > 0.5) * (max(a,2(b-0.5))) + (b <= 0.5) * (min(a,2b)))$</p>
+<p>&nbsp; Uma outra combinação do modo Multiply e Screen, com o intuito de escurecer ou clarear imagens. </p>
+
+<li id="15">Difference</li>
+<p>&nbsp; FÓRMULA: $| a - b |$</p>
+<p>&nbsp; Um dos principais usos deste modo é para verificar o alinhamento de imagens com imagens semelhantes. </p>
+
+<li id="16">Exclusion</li>
+<p>&nbsp; FÓRMULA: $0.5 - 2(a-0.5)(b-0.5)$</p>
+<p>&nbsp; Semelhante ao modo Difference, mistura as duas imagens com um contraste menor.</p>
+</ul>
+
+</div>
+
+</body>
+</html>
