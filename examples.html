@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-
-<title> Exemplos de ComposiÁ„o de Camadas </title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title> Exemplos de Composi√ß√£o de Camadas </title>
 <link rel="stylesheet" href="styles2.css">
 
 </head>
@@ -18,24 +18,24 @@ processEscapes: true
 });
 </script>
 
-<h1> Exemplos de ComposiÁ„o de Camadas</h1>
+<h1> Exemplos de Composi√ß√£o de Camadas</h1>
 <h2> <a href="index.html">Teste aqui!</a> </h2>
 
 <div id="corpo">
 
-<h4>IntroduÁ„o</h4>
-<p>&nbsp; Uma composiÁ„o de camadas aplica operaÁıes em cada valor RGB de cada pixel encontrado na justaposiÁ„o de duas ou mais imagens.
- Neste trabalho, aplicaremos na sobreposiÁ„o de apenas duas imagens.</p>
-<p>&nbsp; Ao clicar no bot„o atualizar a imagem, ser· criado duas novas imagens com ·reas de coincidÍncia diferentes.
+<h4>Introdu√ß√£o</h4>
+<p>&nbsp; Uma composi√ß√£o de camadas aplica opera√ß√µes em cada valor RGB de cada pixel encontrado na justaposi√ß√£o de duas ou mais imagens.
+ Neste trabalho, aplicaremos na sobreposi√ß√£o de apenas duas imagens.</p>
+<p>&nbsp; Ao clicar no bot√£o atualizar a imagem, ser√° criado duas novas imagens com √°reas de coincid√™ncia diferentes.
  A primeira ocorre entre os pixels $(251\times 500,1\times 500)$ da primeira imagem (esquerda) e $(1\times 250,1\times 500)$ da segunda imagem (direita).
  A segunda ocorre entre todos os pixels das duas imagens. </p>
-<h4>Tipos de OperaÁıes</h4>
-<p>&nbsp; Abaixo segue a explicaÁ„o de cada operaÁ„o e seu possÌvel uso ($a$ e $b$ s„o, respectivamente, valores da imagem da esquerda e da direita reduzidos ao intervalo $[0,1]$).</p>
-<p>&nbsp; OperaÁıes com um (*) na frente s„o fÛrmulas comutativas, isto È, n„o importa a ordem das imagens.</p>
+<h4>Tipos de Opera√ß√µes</h4>
+<p>&nbsp; Abaixo segue a explica√ß√£o de cada opera√ß√£o e seu poss√≠vel uso ($a$ e $b$ s√£o, respectivamente, valores da imagem da esquerda e da direita reduzidos ao intervalo $[0,1]$).</p>
+<p>&nbsp; Opera√ß√µes com um (*) na frente s√£o f√≥rmulas comutativas, isto √©, n√£o importa a ordem das imagens.</p>
 <ul>
 <li id="1">Darken(*)</li>
-<p>&nbsp; F”RMULA: $min(a,b)$</p>
-<p>&nbsp; Como o prÛprio nome diz, È usado para escurecer imagens. Geralmente usado com fundo cinzas escuros de escolha.</p>
+<p>&nbsp; F√ìRMULA: $min(a,b)$</p>
+<p>&nbsp; Como o pr√≥prio nome diz, √© usado para escurecer imagens. Geralmente usado com fundo cinzas escuros de escolha.</p>
 <div id="imagem">
 <img src="https://raw.githubusercontent.com/TomasFerranti/CompGra/master/images/ex_11.jpg" id="l" width="400px" height="400px">
 <img src="https://raw.githubusercontent.com/TomasFerranti/CompGra/master/images/ex_12.png" id="m" width="400px" height="400px">
@@ -43,8 +43,8 @@ processEscapes: true
 </div>
 
 <li id="2">Multiply(*)</li>
-<p>&nbsp; F”RMULA: $a*b$</p>
-<p>&nbsp; O resultado do modo Multiply sempre È uma imagem mais escura, devido a cada valor ser menor que $1$, o produto ser· menor do que os dois originais. </p>
+<p>&nbsp; F√ìRMULA: $a*b$</p>
+<p>&nbsp; O resultado do modo Multiply sempre √© uma imagem mais escura, devido a cada valor ser menor que $1$, o produto ser√° menor do que os dois originais. </p>
 <div id="imagem">
 <img src="https://raw.githubusercontent.com/TomasFerranti/CompGra/master/images/ex_11.jpg" id="l" width="400px" height="400px">
 <img src="https://raw.githubusercontent.com/TomasFerranti/CompGra/master/images/ex_12.png" id="m" width="400px" height="400px">
@@ -52,8 +52,8 @@ processEscapes: true
 </div>
 
 <li id="3">Color Burn</li>
-<p>&nbsp; F”RMULA: $1 - \frac{1-a}{b}$</p>
-<p>&nbsp; Esse operador escurece os valores de $b$ aumentando o contraste para refletir a cor de $a$. O qu„o mais escuro $a$, mais de sua cor È usada.</p>
+<p>&nbsp; F√ìRMULA: $1 - \frac{1-a}{b}$</p>
+<p>&nbsp; Esse operador escurece os valores de $b$ aumentando o contraste para refletir a cor de $a$. O qu√£o mais escuro $a$, mais de sua cor √© usada.</p>
 <div id="imagem">
 <img src="https://raw.githubusercontent.com/TomasFerranti/CompGra/master/images/ex_11.jpg" id="l" width="400px" height="400px">
 <img src="https://raw.githubusercontent.com/TomasFerranti/CompGra/master/images/ex_12.png" id="m" width="400px" height="400px">
@@ -61,8 +61,8 @@ processEscapes: true
 </div>
 
 <li id="4">Linear Burn(*)</li>
-<p>&nbsp; F”RMULA: $a+b-1$</p>
-<p>&nbsp; O mesmo que inverter cada camada, adicion·-las e inverter o resultado.</p>
+<p>&nbsp; F√ìRMULA: $a+b-1$</p>
+<p>&nbsp; O mesmo que inverter cada camada, adicion√°-las e inverter o resultado.</p>
 <div id="imagem">
 <img src="https://raw.githubusercontent.com/TomasFerranti/CompGra/master/images/ex_11.jpg" id="l" width="400px" height="400px">
 <img src="https://raw.githubusercontent.com/TomasFerranti/CompGra/master/images/ex_12.png" id="m" width="400px" height="400px">
@@ -70,7 +70,7 @@ processEscapes: true
 </div>
 
 <li id="5">Lighten(*)</li>
-<p>&nbsp; F”RMULA: $max(a,b)$</p>
+<p>&nbsp; F√ìRMULA: $max(a,b)$</p>
 <p>&nbsp; Inverso do Darken, ilumina as imagens.</p>
 <div id="imagem">
 <img src="https://raw.githubusercontent.com/TomasFerranti/CompGra/master/images/ex_11.jpg" id="l" width="400px" height="400px">
@@ -79,7 +79,7 @@ processEscapes: true
 </div>
 
 <li id="6">Screen(*)</li>
-<p>&nbsp; F”RMULA: $1-(1-a)(1-b)$</p>
+<p>&nbsp; F√ìRMULA: $1-(1-a)(1-b)$</p>
 <p>&nbsp; O operador Screen inverte os valores, os multiplica, e depois inverte novamente. Esse processo resulta no oposto do modo Multiply, resultando em uma imagem mais clara. </p>
 <div id="imagem">
 <img src="https://raw.githubusercontent.com/TomasFerranti/CompGra/master/images/ex_11.jpg" id="l" width="400px" height="400px">
@@ -88,8 +88,8 @@ processEscapes: true
 </div>
 
 <li id="7">Color Dodge</li>
-<p>&nbsp; F”RMULA: $\frac{a}{1-b}$</p>
-<p>&nbsp; Dividir $a$ pelo inverso de $b$ deixa os valores de $b$ mais claros proporcionalmente aos valores de $a$, quanto mais claro $b$, mais sua cor afeta $a$. Colocando essa operaÁ„o com branco sempre resulta em branco. </p>
+<p>&nbsp; F√ìRMULA: $\frac{a}{1-b}$</p>
+<p>&nbsp; Dividir $a$ pelo inverso de $b$ deixa os valores de $b$ mais claros proporcionalmente aos valores de $a$, quanto mais claro $b$, mais sua cor afeta $a$. Colocando essa opera√ß√£o com branco sempre resulta em branco. </p>
 <div id="imagem">
 <img src="https://raw.githubusercontent.com/TomasFerranti/CompGra/master/images/ex_11.jpg" id="l" width="400px" height="400px">
 <img src="https://raw.githubusercontent.com/TomasFerranti/CompGra/master/images/ex_12.png" id="m" width="400px" height="400px">
@@ -97,8 +97,8 @@ processEscapes: true
 </div>
 
 <li id="8">Linear Dodge(*)</li>
-<p>&nbsp; F”RMULA: $a+b$</p>
-<p>&nbsp; Tem esse nome devido a caso usado com branco resulta em branco, e caso seja com preto n„o muda a imagem. Quando $b$ tem uma cor homogÍnea, esse efeito È equivalente a mudar a saÌda para essa cor.</p>
+<p>&nbsp; F√ìRMULA: $a+b$</p>
+<p>&nbsp; Tem esse nome devido a caso usado com branco resulta em branco, e caso seja com preto n√£o muda a imagem. Quando $b$ tem uma cor homog√™nea, esse efeito √© equivalente a mudar a sa√≠da para essa cor.</p>
 <div id="imagem">
 <img src="https://raw.githubusercontent.com/TomasFerranti/CompGra/master/images/ex_11.jpg" id="l" width="400px" height="400px">
 <img src="https://raw.githubusercontent.com/TomasFerranti/CompGra/master/images/ex_12.png" id="m" width="400px" height="400px">
@@ -106,8 +106,8 @@ processEscapes: true
 </div>
 
 <li id="9">Overlay</li>
-<p>&nbsp; F”RMULA: $(a > 0.5) * (1 - (1-2(a-0.5))(1-b)) + (a <= 0.5) * (2ab)$</p>
-<p>&nbsp; Overlay combina os dois operadores Multiply e Screen. As partes de $b$ onde $a$ È claro fica mais claro, enquanto as partes em que $a$ È escuro fica mais escuro. ¡reas de $b$ meio cinzas n„o s„o afetadas. </p>
+<p>&nbsp; F√ìRMULA: $(a > 0.5) * (1 - (1-2(a-0.5))(1-b)) + (a <= 0.5) * (2ab)$</p>
+<p>&nbsp; Overlay combina os dois operadores Multiply e Screen. As partes de $b$ onde $a$ √© claro fica mais claro, enquanto as partes em que $a$ √© escuro fica mais escuro. √Åreas de $b$ meio cinzas n√£o s√£o afetadas. </p>
 <div id="imagem">
 <img src="https://raw.githubusercontent.com/TomasFerranti/CompGra/master/images/ex_11.jpg" id="l" width="400px" height="400px">
 <img src="https://raw.githubusercontent.com/TomasFerranti/CompGra/master/images/ex_12.png" id="m" width="400px" height="400px">
@@ -115,8 +115,8 @@ processEscapes: true
 </div>
 
 <li id="10">Soft Light</li>
-<p>&nbsp; F”RMULA: $(b < 0.5) * (2ab+a^2(1-2b)) + (b <= 0.5) * (2a(1-b)+ \sqrt{a}(2b-1))$</p>
-<p>&nbsp; Soft Light È bem prÛximo a Overlay, apesar de seu nome ser similar a Hard Light. A fÛrmula acima È usada no Photoshop 2012. H· v·rias maneiras de aplicar o operador soft light, mas ambos tem resultados similares, que È deixar as sombras mais claras.</p>
+<p>&nbsp; F√ìRMULA: $(b < 0.5) * (2ab+a^2(1-2b)) + (b <= 0.5) * (2a(1-b)+ \sqrt{a}(2b-1))$</p>
+<p>&nbsp; Soft Light √© bem pr√≥ximo a Overlay, apesar de seu nome ser similar a Hard Light. A f√≥rmula acima √© usada no Photoshop 2012. H√° v√°rias maneiras de aplicar o operador soft light, mas ambos tem resultados similares, que √© deixar as sombras mais claras.</p>
 <div id="imagem">
 <img src="https://raw.githubusercontent.com/TomasFerranti/CompGra/master/images/ex_11.jpg" id="l" width="400px" height="400px">
 <img src="https://raw.githubusercontent.com/TomasFerranti/CompGra/master/images/ex_12.png" id="m" width="400px" height="400px">
@@ -124,8 +124,8 @@ processEscapes: true
 </div>
 
 <li id="11">Hard Light</li>
-<p>&nbsp; F”RMULA: $(b > 0.5) * (1 - (1-a)(1-2(b-0.5))) +(b <= 0.5) * (2ab)$</p>
-<p>&nbsp; Hard Light tambÈm È uma combinaÁ„o de Multiply e Screen. Afeta a relaÁ„o entre $a$ e $b$ de maneira semelhante ao Overlay. Ele È considerado um operador comutativo com relaÁ„o ao Overlay.</p>
+<p>&nbsp; F√ìRMULA: $(b > 0.5) * (1 - (1-a)(1-2(b-0.5))) +(b <= 0.5) * (2ab)$</p>
+<p>&nbsp; Hard Light tamb√©m √© uma combina√ß√£o de Multiply e Screen. Afeta a rela√ß√£o entre $a$ e $b$ de maneira semelhante ao Overlay. Ele √© considerado um operador comutativo com rela√ß√£o ao Overlay.</p>
 <div id="imagem">
 <img src="https://raw.githubusercontent.com/TomasFerranti/CompGra/master/images/ex_11.jpg" id="l" width="400px" height="400px">
 <img src="https://raw.githubusercontent.com/TomasFerranti/CompGra/master/images/ex_12.png" id="m" width="400px" height="400px">
@@ -133,8 +133,8 @@ processEscapes: true
 </div>
 
 <li id="12">Vivid Light</li>
-<p>&nbsp; F”RMULA: $(b > 0.5) * (1 - \frac{1-a}{2(b-0.5)}) + (b <= 0.5) * (\frac{a}{1-2b})$</p>
-<p>&nbsp; Esse operador combina Color Dodge e Color Burn. Dodge È aplicado quando os valores de $b$ s„o maiores que o "meio-cinza", e Burn a valores mais escuros. O contraste perceptÌvel aumenta.</p>
+<p>&nbsp; F√ìRMULA: $(b > 0.5) * (1 - \frac{1-a}{2(b-0.5)}) + (b <= 0.5) * (\frac{a}{1-2b})$</p>
+<p>&nbsp; Esse operador combina Color Dodge e Color Burn. Dodge √© aplicado quando os valores de $b$ s√£o maiores que o "meio-cinza", e Burn a valores mais escuros. O contraste percept√≠vel aumenta.</p>
 <div id="imagem">
 <img src="https://raw.githubusercontent.com/TomasFerranti/CompGra/master/images/ex_11.jpg" id="l" width="400px" height="400px">
 <img src="https://raw.githubusercontent.com/TomasFerranti/CompGra/master/images/ex_12.png" id="m" width="400px" height="400px">
@@ -142,7 +142,7 @@ processEscapes: true
 </div>
 
 <li id="13">Linear Light</li>
-<p>&nbsp; F”RMULA: $(b > 0.5) * (a + 2(b-0.5)) + (b <= 0.5) * (a + 2b - 1)$</p>
+<p>&nbsp; F√ìRMULA: $(b > 0.5) * (a + 2(b-0.5)) + (b <= 0.5) * (a + 2b - 1)$</p>
 <p>&nbsp; Este modo combina Linear Dodge e Linear Burn, reduzindo o contraste.</p>
 <div id="imagem">
 <img src="https://raw.githubusercontent.com/TomasFerranti/CompGra/master/images/ex_11.jpg" id="l" width="400px" height="400px">
@@ -151,8 +151,8 @@ processEscapes: true
 </div>
 
 <li id="14">Pin Light</li>
-<p>&nbsp; F”RMULA: $(b > 0.5) * (max(a,2(b-0.5))) + (b <= 0.5) * (min(a,2b)))$</p>
-<p>&nbsp; Uma outra combinaÁ„o do modo Multiply e Screen, com o intuito de escurecer ou clarear imagens. </p>
+<p>&nbsp; F√ìRMULA: $(b > 0.5) * (max(a,2(b-0.5))) + (b <= 0.5) * (min(a,2b)))$</p>
+<p>&nbsp; Uma outra combina√ß√£o do modo Multiply e Screen, com o intuito de escurecer ou clarear imagens. </p>
 <div id="imagem">
 <img src="https://raw.githubusercontent.com/TomasFerranti/CompGra/master/images/ex_11.jpg" id="l" width="400px" height="400px">
 <img src="https://raw.githubusercontent.com/TomasFerranti/CompGra/master/images/ex_12.png" id="m" width="400px" height="400px">
@@ -160,8 +160,8 @@ processEscapes: true
 </div>
 
 <li id="15">Difference(*)</li>
-<p>&nbsp; F”RMULA: $| a - b |$</p>
-<p>&nbsp; Um dos principais usos deste modo È para verificar o alinhamento de imagens com imagens semelhantes. </p>
+<p>&nbsp; F√ìRMULA: $| a - b |$</p>
+<p>&nbsp; Um dos principais usos deste modo √© para verificar o alinhamento de imagens com imagens semelhantes. </p>
 <div id="imagem">
 <img src="https://raw.githubusercontent.com/TomasFerranti/CompGra/master/images/ex_11.jpg" id="l" width="400px" height="400px">
 <img src="https://raw.githubusercontent.com/TomasFerranti/CompGra/master/images/ex_12.png" id="m" width="400px" height="400px">
@@ -169,7 +169,7 @@ processEscapes: true
 </div>
 
 <li id="16">Exclusion(*)</li>
-<p>&nbsp; F”RMULA: $0.5 - 2(a-0.5)(b-0.5)$</p>
+<p>&nbsp; F√ìRMULA: $0.5 - 2(a-0.5)(b-0.5)$</p>
 <p>&nbsp; Semelhante ao modo Difference, mistura as duas imagens com um contraste menor.</p>
 <div id="imagem">
 <img src="https://raw.githubusercontent.com/TomasFerranti/CompGra/master/images/ex_11.jpg" id="l" width="400px" height="400px">
