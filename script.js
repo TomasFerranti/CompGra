@@ -252,8 +252,6 @@ function drawFigure3(){
 			imgF1Data.data[i+3] = 255;
 		}
 	}
-	ctxF.putImageData(img2Data, 250, 0);
-	ctxF.putImageData(imgF1Data, 0, 0);
 	
 	
 	img1Data = ctx1.getImageData(0,0,500,500);
@@ -265,7 +263,7 @@ function drawFigure3(){
 		imgF2Data.data[i+2] = f(img1Data.data[i+2] , img2Data.data[i+2]);
 		imgF2Data.data[i+3] = 255;
 	}
-	ctxF.putImageData(imgF2Data, 850, 0);
+	ctxF.putImageData(imgF2Data, 0, 0);
 };
 
 function swapImages(){
