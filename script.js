@@ -10,8 +10,8 @@ var img2 = new Image();
 img1.crossOrigin = '';
 img2.crossOrigin = '';
 
-img1.src = 'https://raw.githubusercontent.com/TomasFerranti/CompGra/master/ex_11.jpg';
-img2.src = 'https://raw.githubusercontent.com/TomasFerranti/CompGra/master/ex_12.png';
+img1.src = 'https://raw.githubusercontent.com/TomasFerranti/CompGra/master/images/ex_11.jpg';
+img2.src = 'https://raw.githubusercontent.com/TomasFerranti/CompGra/master/images/ex_12.png';
 
 img1.onload = function(){
 	ctx1.drawImage(img1, 0, 0, 500, 500);	
