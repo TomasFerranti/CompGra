@@ -1,1 +1,1 @@
-Trabalho realizado para a primeira avaliação na eletiva de Introdução a Computação Gráfica no curso de Graduação em Matemática Aplicada pela FGV-RJ.
+Conteúdo criado durante a realização da disciplina Introdução a Computação Gráfica/FGV-RJ em 2019.2.
