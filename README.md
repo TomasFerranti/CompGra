@@ -1,1 +1,1 @@
-Conteúdo criado durante a realização da disciplina Introdução a Computação Gráfica/FGV-RJ em 2019.2.
+Conteúdo criado durante a realização da disciplina eletiva Introdução a Computação Gráfica/FGV-RJ em 2019.2.

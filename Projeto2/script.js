@@ -257,6 +257,7 @@ function updateCollisions(){
 		var result = checkCollisions(listObjects[i],listObjects[0]);
 		if(result[0]){
 			if(result[1][1] < 0) listObjects[0].canJump = true;
+			if(result[1][1] > 0 && listObjects[0].vel[1]<0) listObjects[0].vel[1] = 0;
 			listObjects[0].pos[0] = listObjects[0].pos[0] + result[1][0];
 			listObjects[0].pos[1] = listObjects[0].pos[1] + result[1][1];
 		};
@@ -273,12 +274,14 @@ function updateVel() {
 	else if(keys["right"]) listObjects[0].vel[0] = 1.5;
 	else listObjects[0].vel[0] = 0;
 	
+	//Attack
 	if(keys["z"] && weaponInCooldown){
 		listObjects[1].inScreen = true;
 		weaponInCooldown = false;
 		intervalResetWeapon = setInterval(resetWeapon, 300);
 	};
 	
+	//Jump
 	if(keys["x"] && listObjects[0].canJump){
 		listObjects[0].vel[1] = -5;
 		listObjects[0].canJump = false;
@@ -290,7 +293,7 @@ function updateVel() {
 	
 	//Final update
 	for(var i=0; i<listObjects.length; i++){
-		listObjects[i].pos[0] = listObjects[i].pos[0] + listObjects[i].vel[0];
+		if(i!=0) listObjects[i].pos[0] = listObjects[i].pos[0] - listObjects[0].vel[0];
 		listObjects[i].pos[1] = listObjects[i].pos[1] + listObjects[i].vel[1];
 	};
 };
@@ -381,4 +384,4 @@ function draw() {
 
 
 //Desenhando e atualizando os valores
-setInterval(draw,1);
+setInterval(draw,5);
