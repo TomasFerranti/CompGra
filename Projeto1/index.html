@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title> Composição de Camadas </title>
+<link rel="stylesheet" href="styles1.css">
+
+</head>
+<body>
+
+<script type="text/javascript" async
+src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async>
+MathJax.Hub.Config({
+tex2jax: {
+inlineMath: [['$','$'], ['\\(','\\)']],
+processEscapes: true
+}
+});
+</script>
+
+<h1> Composição de Camadas</h1>
+<h2> <a href="examples.html">Explicações e exemplos</a> </h2>
+<h3> Trabalho realizado para a Avaliação 1 da disciplina Introdução à Computação Gráfica</h3>
+
+<div id="imagens">
+<figure>
+	<canvas id="imagem1" width="1100" height="500"></canvas>
+</figure>
+</div>
+
+<div id="controle">
+&nbsp; A maioria das imagens necessita de uma <a href="https://chrome.google.com/webstore/detail/allow-cors-access-control/lhobafahddgcelffkeicbaginigeejlf" target="_blank">extensão de CORS policy</a> para aparecer.
+<button onclick="updateFigure1()">Clique aqui para modificar a imagem 1</button>
+<button onclick="updateFigure2()">Clique aqui para modificar a imagem 2</button>
+
+<center>
+<button onclick="swapImages()">Trocar imagens de lugar</button>
+</center>
+
+<form> 
+  <p>&nbsp; Escolha uma das opções de operação abaixo:</p>
+  <div>
+    <input type="radio"
+           name="metodo" value="1">
+    <label for="metodo">Darken(*)</label>
+	</div>
+	<div>
+    <input type="radio"
+           name="metodo" value="2">
+    <label for="multiply">Multiply(*)</label>
+	</div>
+	<div>
+	<input type="radio"
+           name="metodo" value="3">
+    <label for="ColorBurn">Color Burn</label>
+	</div>
+	<div>
+	<input type="radio"
+           name="metodo" value="4">
+    <label for="LinearBurn">Linear Burn(*)</label>
+	</div>
+	<div>
+	<input type="radio"
+           name="metodo" value="5">
+    <label for="Lighten">Lighten(*)</label>
+	</div>
+	<div>
+	<input type="radio"
+           name="metodo" value="6">
+    <label for="Screen">Screen(*)</label>
+	</div>
+	<div>
+	<input type="radio"
+           name="metodo" value="7">
+    <label for="ColorDodge">Color Dodge</label>
+	</div>
+	<div>
+	<input type="radio"
+           name="metodo" value="8">
+    <label for="LinearDodge">Linear Dodge(*)</label>
+	</div>
+	<div>
+	<input type="radio"
+           name="metodo" value="9">
+    <label for="Overlay">Overlay</label>
+	</div>
+	<div>
+	<input type="radio"
+           name="metodo" value="10">
+    <label for="SoftLight">Soft Light</label>
+	</div>
+	<div>
+	<input type="radio"
+           name="metodo" value="11">
+    <label for="HardLight">Hard Light</label>
+	</div>
+	<div>
+	<input type="radio"
+           name="metodo" value="12">
+    <label for="VividLight">Vivid Light</label>
+	</div>
+	<div>
+	<input type="radio"
+           name="metodo" value="13">
+    <label for="LinearLight">Linear Light</label>
+	</div>
+	<div>
+	<input type="radio"
+           name="metodo" value="14">
+    <label for="PinLight">Pin Light</label>
+	</div>
+	<div>
+	<input type="radio"
+           name="metodo" value="15">
+    <label for="Difference">Difference(*)</label>
+	</div>
+	<div>
+	<input type="radio"
+           name="metodo" value="16">
+    <label for="Exclusion">Exclusion(*)</label>	
+  </div>
+  <center>
+  <div>
+    <button type="submit">Atualizar operação</button>
+  </div>
+  </center>
+</form>
+
+<center>
+<button onclick="drawFigure3()">Clique aqui para atualizar o resultado</button>
+</center>
+</div>
+
+<div id="imgfinal">
+<figure>
+	<canvas id="imagemFinal" width="1350" height="500"></canvas>
+</figure>
+</div>
+
+<script type="text/javascript" src="script.js">
+</script>
+
+
+
+</body>
+</html>

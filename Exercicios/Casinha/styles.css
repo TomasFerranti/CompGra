@@ -1,0 +1,15 @@
+h1 {
+  text-align: center;
+  height: 300px;
+  width: 200px;
+}
+
+svg {
+  text-align: center;
+  height: 768px;
+  width: 1024px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
