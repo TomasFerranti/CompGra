@@ -10,7 +10,7 @@ function rectanglePoints(x,y,width,height){
 
 
 //Criando uma classe para facilitar os desenhos
-class Objeto {
+class Objeto {	
 	
     constructor(size,solid,pos,vel,bouncy,harmable) {
 		//Valores internos
@@ -26,7 +26,7 @@ class Objeto {
 		this.harmable = harmable;
 		this.skin = undefined;
 		this.direction = "r";
-		this.color = "blue";
+		this.color = "grey";
 		
 		//Construindo o path do SVG que a compõe:
 		var points = rectanglePoints(0,0,size[0],size[1]);
@@ -121,12 +121,12 @@ var keys = {
 	right: false,
 	down: false,
 	z: false,
-	x: false
+	x: false,
+	c: false
 };
 
 $("body").keydown(function (event) {
  var buttom = event.keyCode;
- 
  //left code = 37
  if(buttom==37){
 	keys["left"] = true;
@@ -155,6 +155,11 @@ $("body").keydown(function (event) {
  //x code = 88
  if(buttom==88){
 	keys["x"] = true;
+ }
+ 
+ //c code = 67
+ if(buttom==67){
+	keys["c"] = true;
  }
 })
 
@@ -189,6 +194,11 @@ $("body").keyup(function (event) {
  if(buttom==88){
 	keys["x"] = false;
  }
+ 
+ //c code = 67
+ if(buttom==67){
+	keys["c"] = false;
+ }
 })
 
 
@@ -201,11 +211,15 @@ listObjects.push(new Objeto([40,80],false,[380,470],[0,0],false,false));
 listObjects.push(new Objeto([80,80],false,[400,470],[0,0],false,false));
 //Ground
 listObjects.push(new Objeto([800,50],true,[0,550],[0,0],false,false));
-//Paredes
-listObjects.push(new Objeto([200,20],true,[0,350],[0,0],false,false));
-listObjects.push(new Objeto([200,20],true,[600,350],[0,0],false,false));
+//Plataformas
+listObjects.push(new Objeto([100,20],true,[0,350],[0,0],false,false));
+listObjects.push(new Objeto([100,20],true,[600,350],[0,0],false,false));
 listObjects.push(new Objeto([100,20],true,[350,250],[0,0],false,false));
 listObjects.push(new Objeto([200,20],true,[0,150],[0,0],false,false));
+//Borda
+listObjects.push(new Objeto([50,600],true,[-50,0],[0,0],false,false));
+listObjects.push(new Objeto([800,50],true,[0,-50],[0,0],false,false));
+listObjects.push(new Objeto([50,600],true,[800,0],[0,0],false,false));
 
 //Atributos especiais de alguns objetos
 listObjects[1].inScreen = false;
@@ -253,15 +267,18 @@ function checkCollisions(object1,object2){
 
 //Verificando colisões entre os objetos
 function updateCollisions(){
+	var flagInAir = true;
 	for(i=2;i<listObjects.length;i++){
 		var result = checkCollisions(listObjects[i],listObjects[0]);
 		if(result[0]){
+			flagInAir = false;
 			if(result[1][1] < 0) listObjects[0].canJump = true;
 			if(result[1][1] > 0 && listObjects[0].vel[1]<0) listObjects[0].vel[1] = 0;
 			listObjects[0].pos[0] = listObjects[0].pos[0] + result[1][0];
 			listObjects[0].pos[1] = listObjects[0].pos[1] + result[1][1];
 		};
 	};
+	if(flagInAir) listObjects[0].canJump = false;
 	return;
 };
 
@@ -293,7 +310,7 @@ function updateVel() {
 	
 	//Final update
 	for(var i=0; i<listObjects.length; i++){
-		if(i!=0) listObjects[i].pos[0] = listObjects[i].pos[0] - listObjects[0].vel[0];
+		listObjects[i].pos[0] = listObjects[i].pos[0] + listObjects[i].vel[0];
 		listObjects[i].pos[1] = listObjects[i].pos[1] + listObjects[i].vel[1];
 	};
 };
