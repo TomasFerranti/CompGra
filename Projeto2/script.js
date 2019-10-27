@@ -2,18 +2,18 @@ var svg = document.getElementById("mainSvg");
 
 var idObject = 0;
 
-//Função que gera os pontos de um retangulo
+//Generate points of a rectangle
 function rectanglePoints(x,y,width,height){
 	return [[x,y],[x+width,y],[x+width,y+height],[x,y+height]];
 }
 
 
 
-//Criando uma classe para facilitar os desenhos
+//Objects class
 class Objeto {	
 	
-    constructor(size,solid,pos,vel,bouncy,harmable) {
-		//Valores internos
+    constructor(size,solid,pos,bouncy,harmable) {
+		//Internal Values
         this.id = "obj"+idObject;
 		this.width = size[0];
 		this.height = size[1];
@@ -21,14 +21,14 @@ class Objeto {
 		this.drawed = false;
 		this.solid = solid;
 		this.pos = pos;
-		this.vel = vel;
+		this.vel = [0,0];
 		this.bouncy = bouncy;
 		this.harmable = harmable;
 		this.skin = undefined;
 		this.direction = "r";
 		this.color = "grey";
 		
-		//Construindo o path do SVG que a compõe:
+		//SVG Path
 		var points = rectanglePoints(0,0,size[0],size[1]);
 		if(points.length==0) {
 			this.path = "";
@@ -47,12 +47,12 @@ class Objeto {
     }
 
     draw() {
-		//Comando de desenhar o objeto
+		//Drawing the object
 		
-		//Se já desenhado
+		//If already drawn, remove
 		if(this.drawed) this.remove();
 		
-		//Crio o elemento SVG e atribuo seus valores
+		//Creating the SVG element
 		if (!this.skin){
 			var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'path');
 			newElement.setAttribute("d",this.path);
@@ -60,9 +60,6 @@ class Objeto {
 			newElement.id = this.id;
 			newElement.style.stroke = "black";
 			newElement.style.fill = this.color;
-			if(!this.solid) newElement.style.fill = "none"; 
-					
-			//Adicionando ele ao SVG
 			svg.appendChild(newElement);
 		}else{
 			var mySkin = document.createElementNS("http://www.w3.org/2000/svg", 'image');
@@ -84,7 +81,7 @@ class Objeto {
     }
 	
 	remove() {
-		//Função para remover o objeto do desenho
+		//Function to remove the object from the screen
 		if(!this.drawed) return;
 		
 		var myObj = document.getElementById(this.id);
@@ -96,7 +93,7 @@ class Objeto {
 
 
 
-//Tratando a posição do mouse
+//Mouse position
 /*
 var mouseX = null;
 var mouseY = null;
@@ -114,7 +111,7 @@ function onMouseUpdate(e) {
 
 
 
-//Tratando a entrada do usuário
+//User input
 var keys = {
     up: false,
     left: false,
@@ -203,39 +200,47 @@ $("body").keyup(function (event) {
 
 
 
-//Criando os objetos
-listObjects = [];
+//Game objects
+{
+var listObjects = [];
+var lifeMasks = [];
 //Knight
-listObjects.push(new Objeto([40,80],false,[380,470],[0,0],false,false));
+listObjects.push(new Objeto([40,80],false,[280,470],false,false));
 //Weapon
-listObjects.push(new Objeto([80,80],false,[400,470],[0,0],false,false));
+listObjects.push(new Objeto([80,80],false,[400,470],false,false));
 //Ground
-listObjects.push(new Objeto([800,50],true,[0,550],[0,0],false,false));
+listObjects.push(new Objeto([800,50],true,[0,550],false,false));
 //Plataformas
-listObjects.push(new Objeto([100,20],true,[0,350],[0,0],false,false));
-listObjects.push(new Objeto([100,20],true,[600,350],[0,0],false,false));
-listObjects.push(new Objeto([100,20],true,[350,250],[0,0],false,false));
-listObjects.push(new Objeto([200,20],true,[0,150],[0,0],false,false));
+listObjects.push(new Objeto([40,500],true,[380,100],false,false));
+listObjects.push(new Objeto([50,20],true,[0,200],false,false));
+listObjects.push(new Objeto([50,20],true,[330,400],false,false));
 //Borda
-listObjects.push(new Objeto([50,600],true,[-50,0],[0,0],false,false));
-listObjects.push(new Objeto([800,50],true,[0,-50],[0,0],false,false));
-listObjects.push(new Objeto([50,600],true,[800,0],[0,0],false,false));
+listObjects.push(new Objeto([50,600],true,[-50,0],false,false));
+listObjects.push(new Objeto([800,50],true,[0,-50],false,false));
+listObjects.push(new Objeto([50,600],true,[800,0],false,false));
+//Life masks
+var currentLife = 5;
+for(i=0;i<5;i++) lifeMasks.push(new Objeto([40,60],false,[(45*i),0],false,false));
+//Spikes
+listObjects.push(new Objeto([50,50],true,[600,500],true,true));
+};
 
-//Atributos especiais de alguns objetos
+//Special attributes
 listObjects[1].inScreen = false;
 listObjects[0].canJump = true;
+listObjects[0].isDashing = false;
+listObjects[0].canDash = true;
+listObjects[0].invulnerable = false;
 
-//Colocando skins
+//Skins
 listObjects[0].skin = "svgKnight.svg";
 listObjects[1].skin = "slash.svg";
 listObjects[2].color = "e1a95f";
+listObjects[9].skin = "spikes.svg";
 
 
 
-//Verificando colisões entre o knight, sua arma e os objetos
-//Função que verifica colisão entre dois objetos, retornando [false,[0,0]] se não há colisão
-//e retornando [true,[x,y]] se há colisão, sendo que [x,y] é o vetor de menor módulo que
-//desloca o retangulo passado como segundo parametro
+//Collision checking
 function checkCollisions(object1,object2){
 	var center1 = [object1.pos[0]+object1.width/2,object1.pos[1]+object1.height/2];
 	var center2 = [object2.pos[0]+object2.width/2,object2.pos[1]+object2.height/2];
@@ -249,50 +254,71 @@ function checkCollisions(object1,object2){
 		if(Math.abs(smallestVector[0])>Math.abs(smallestVector[1])) smallestVector[0] = 0;
 		else smallestVector[1] = 0;
 		if(bottom && right){
-			//baixo direita
+			//bottom right
 		}else if(bottom && !right){
-			//baixo esquerda
+			//bottom left
 			smallestVector[0] = -smallestVector[0];
 		}else if(!bottom && right){
-			//cima direita
+			//up right
 			smallestVector[1] = -smallestVector[1];	
 		}else{
-			//cima esquerda
+			//up left
 			smallestVector[0] = -smallestVector[0];
 			smallestVector[1] = -smallestVector[1];
 		};
 		return [true,smallestVector];
 	}else return [false];
 };
-
-//Verificando colisões entre os objetos
+//Verifying collisions
 function updateCollisions(){
+	//Collision between weapon and objects
+	if(listObjects[1].inScreen){
+		for(i=2;i<listObjects.length;i++){
+			var result = checkCollisions(listObjects[i],listObjects[1]);
+			//Bouncy effect
+			if(result[0] && listObjects[i].bouncy){
+				if(result[1][0] != 0){
+					//Horizontal
+					if(result[1][0] > 0) listObjects[0].vel[0] = 3;
+					else listObjects[0].vel[0] = -3;
+				}else{
+					//Vertical
+					if(result[1][1] > 0) listObjects[0].vel[1] = 4;
+					else listObjects[0].vel[1] = -4;
+				};
+			};
+			
+			//Hitting effect
+		};
+	};
+	
+	//Collision between knight and objects
 	var flagInAir = true;
 	for(i=2;i<listObjects.length;i++){
 		var result = checkCollisions(listObjects[i],listObjects[0]);
-		if(result[0]){
+		if(result[0] && listObjects[i].solid){
 			flagInAir = false;
 			if(result[1][1] < 0) listObjects[0].canJump = true;
 			if(result[1][1] > 0 && listObjects[0].vel[1]<0) listObjects[0].vel[1] = 0;
 			listObjects[0].pos[0] = listObjects[0].pos[0] + result[1][0];
 			listObjects[0].pos[1] = listObjects[0].pos[1] + result[1][1];
 		};
-	};
-	if(flagInAir) listObjects[0].canJump = false;
+	};	
+	if(flagInAir) listObjects[0].canJump = false;	
 	return;
 };
 
 
 
-//Atualizando velocidades
+//Physics and user input
 function updateVel() {	
-	//Update with keys
+	//Knight movement
 	if(keys["left"]) listObjects[0].vel[0] = -1.5;
 	else if(keys["right"]) listObjects[0].vel[0] = 1.5;
-	else listObjects[0].vel[0] = 0;
+	else listObjects[0].vel[0] = 0.9*listObjects[0].vel[0];
 	
 	//Attack
-	if(keys["z"] && weaponInCooldown){
+	if(keys["z"] && weaponInCooldown && !listObjects[0].isDashing){
 		listObjects[1].inScreen = true;
 		weaponInCooldown = false;
 		intervalResetWeapon = setInterval(resetWeapon, 300);
@@ -304,11 +330,27 @@ function updateVel() {
 		listObjects[0].canJump = false;
 	};
 	
+	//Dash
+	if(keys["c"] && listObjects[0].canDash && !listObjects[1].inScreen){
+		listObjects[0].isDashing = true;
+		listObjects[0].canDash = false;
+		intervalResetDash = setInterval(resetDash, 500);		
+	};
+	
 	//Gravity
 	if(listObjects[0].vel[1]<3) listObjects[0].vel[1] += 0.05;
 	else listObjects[0].vel[1] = 3;
 	
-	//Final update
+	//Dash speed
+	if(listObjects[0].isDashing){
+		listObjects[0].vel[1] = 0;
+		if(listObjects[0].direction == "r"){
+			listObjects[0].vel[0] = 3;
+		}else{
+			listObjects[0].vel[0] = -3;
+		};
+	};
+	//Positions update with the speed vector
 	for(var i=0; i<listObjects.length; i++){
 		listObjects[i].pos[0] = listObjects[i].pos[0] + listObjects[i].vel[0];
 		listObjects[i].pos[1] = listObjects[i].pos[1] + listObjects[i].vel[1];
@@ -317,9 +359,9 @@ function updateVel() {
 
 
 
-//Função que lida com o ataque do personagem e atualiza suas direções
+//Attack and knight directions
 function checkAttacking(){	
-	//Atualizando a direção do ataque
+	//Updating direction of the attack
 	if(!listObjects[1].inScreen){
 		listObjects[1].direction = listObjects[0].direction;
 		if(keys["left"]){
@@ -333,7 +375,7 @@ function checkAttacking(){
 		};
 	};
 	
-	//Atualizando a posição do ataque
+	//Updating position of the attack
 	switch(listObjects[1].direction){
 		case "l":
 			listObjects[1].pos[0] = listObjects[0].pos[0] + listObjects[0].width/2 - listObjects[1].width;
@@ -354,15 +396,15 @@ function checkAttacking(){
 		default:
 	};
 	
-	//Atualizando a direção do personagem
+	//Updating direction of the knight
 	if(keys["left"] && keys["right"]) {}
-	if(keys["left"] && listObjects[0].direction == "r") listObjects[0].direction = "l";
-	if(keys["right"] && listObjects[0].direction == "l") listObjects[0].direction = "r";
+	if(keys["left"] && listObjects[0].direction == "r" && !listObjects[0].isDashing) listObjects[0].direction = "l";
+	if(keys["right"] && listObjects[0].direction == "l" && !listObjects[0].isDashing) listObjects[0].direction = "r";
 };
 
 
 
-//Seção que lida com o ataque
+//Attack interval
 var weaponInCooldown = true;
 var intervalResetWeaponCooldown;
 var intervalResetWeapon;
@@ -377,20 +419,43 @@ function resetWeaponCooldown(){
 	clearInterval(intervalResetWeaponCooldown);
 };
 
+//Dash interval
+var intervalResetDashCooldown;
+var intervalResetDash;
+function resetDash(){
+	listObjects[0].isDashing = false;
+	intervalResetDashCooldown = setInterval(resetDashCooldown,1000);
+	clearInterval(intervalResetDash);
+};
+function resetDashCooldown(){
+	listObjects[0].canDash = true;
+	clearInterval(intervalResetDashCooldown);
+};
 
 
-//Desenhando os objetos da lista
+
+//Life update
+function updateLife(){
+	if(currentLife < 0) currentLife = 0;
+	for(var i=0; i<lifeMasks.length; i++){
+		if(i<currentLife) lifeMasks[i].skin = "maskShard.svg";
+		else lifeMasks[i].skin = "emptyMaskShard.svg";
+	}
+	for(var i=0; i<lifeMasks.length; i++){
+		lifeMasks[i].draw();
+	};
+};
+
+
+
+//Final drawing
 function draw() {
-	//Checando se está atacando e atualiza direções
 	checkAttacking();
-
-	//Atualizando velocidades
 	updateVel();
-	
-	//Checando colisões
 	updateCollisions();
+	updateLife();
 	
-	//Desenhando
+	//Drawing objects
 	for(var i=0; i<listObjects.length; i++){	
 		if(i!=1) listObjects[i].draw();
 		else if(listObjects[i].inScreen) listObjects[i].draw();
@@ -400,5 +465,5 @@ function draw() {
 
 
 
-//Desenhando e atualizando os valores
+//Calling the function draw every 5ms
 setInterval(draw,5);
