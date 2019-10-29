@@ -210,19 +210,20 @@ listObjects.push(new Objeto([40,80],false,[280,470],false,false));
 listObjects.push(new Objeto([80,80],false,[400,470],false,false));
 //Ground
 listObjects.push(new Objeto([800,50],true,[0,550],false,false));
-//Plataformas
-listObjects.push(new Objeto([40,500],true,[380,100],false,false));
-listObjects.push(new Objeto([50,20],true,[0,200],false,false));
-listObjects.push(new Objeto([50,20],true,[330,400],false,false));
-//Borda
-listObjects.push(new Objeto([50,600],true,[-50,0],false,false));
-listObjects.push(new Objeto([800,50],true,[0,-50],false,false));
-listObjects.push(new Objeto([50,600],true,[800,0],false,false));
+//Platforms
+listObjects.push(new Objeto([50,20],true,[150,500],false,false));
+listObjects.push(new Objeto([50,20],true,[350,400],false,false));
+listObjects.push(new Objeto([50,20],true,[550,300],false,false));
+listObjects.push(new Objeto([100,20],true,[700,200],false,false));
+//Border
+//listObjects.push(new Objeto([50,600],true,[-50,0],false,false));
+//listObjects.push(new Objeto([800,50],true,[0,-50],false,false));
+//listObjects.push(new Objeto([50,600],true,[800,0],false,false));
 //Life masks
 var currentLife = 5;
 for(i=0;i<5;i++) lifeMasks.push(new Objeto([40,60],false,[(45*i),0],false,false));
 //Spikes
-listObjects.push(new Objeto([50,50],true,[600,500],true,true));
+listObjects.push(new Objeto([46,50],true,[152,450],true,1));
 };
 
 //Special attributes
@@ -233,10 +234,10 @@ listObjects[0].canDash = true;
 listObjects[0].invulnerable = false;
 
 //Skins
-listObjects[0].skin = "svgKnight.svg";
-listObjects[1].skin = "slash.svg";
+listObjects[0].skin = "images/knightIdle.svg";
+listObjects[1].skin = "images/slash.svg";
 listObjects[2].color = "e1a95f";
-listObjects[9].skin = "spikes.svg";
+listObjects[7].skin = "images/spikes.svg";
 
 
 
@@ -277,14 +278,20 @@ function updateCollisions(){
 			var result = checkCollisions(listObjects[i],listObjects[1]);
 			//Bouncy effect
 			if(result[0] && listObjects[i].bouncy){
-				if(result[1][0] != 0){
-					//Horizontal
-					if(result[1][0] > 0) listObjects[0].vel[0] = 3;
-					else listObjects[0].vel[0] = -3;
-				}else{
-					//Vertical
-					if(result[1][1] > 0) listObjects[0].vel[1] = 4;
-					else listObjects[0].vel[1] = -4;
+				switch(listObjects[1].direction){
+					case "r":
+						listObjects[0].vel[0] = -3;
+						break;
+					case "l":
+						listObjects[0].vel[0] = 3;
+						break;
+					case "u":
+						listObjects[0].vel[1] = 4;
+						break;
+					case "d":
+						listObjects[0].vel[1] = -4;
+						break;
+					default:
 				};
 			};
 			
@@ -303,19 +310,37 @@ function updateCollisions(){
 			listObjects[0].pos[0] = listObjects[0].pos[0] + result[1][0];
 			listObjects[0].pos[1] = listObjects[0].pos[1] + result[1][1];
 		};
+		if(result[0] && listObjects[i].harmable && !listObjects[0].invulnerable){
+			console.log(listObjects[0].invulnerable);
+			currentLife = currentLife - listObjects[i].harmable;
+			listObjects[0].invulnerable = true;
+			intervalResetInvulnerability = setInterval(resetInvulnerability,618);
+		};
 	};	
 	if(flagInAir) listObjects[0].canJump = false;	
 	return;
 };
 
+//Function that resets knight invulnerability
+var intervalResetInvulnerability;
+function resetInvulnerability(){
+	listObjects[0].invulnerable = false;
+	clearInterval(intervalResetInvulnerability);
+};
+
 
 
 //Physics and user input
+var observerX = 0;
+var observerY = 0;
 function updateVel() {	
 	//Knight movement
 	if(keys["left"]) listObjects[0].vel[0] = -1.5;
 	else if(keys["right"]) listObjects[0].vel[0] = 1.5;
-	else listObjects[0].vel[0] = 0.9*listObjects[0].vel[0];
+	else{
+		listObjects[0].vel[0] = 0.9*listObjects[0].vel[0];
+		if(Math.abs(listObjects[0].vel[0])<0.01) listObjects[0].vel[0] = 0;
+	};
 	
 	//Attack
 	if(keys["z"] && weaponInCooldown && !listObjects[0].isDashing){
@@ -326,7 +351,7 @@ function updateVel() {
 	
 	//Jump
 	if(keys["x"] && listObjects[0].canJump){
-		listObjects[0].vel[1] = -5;
+		listObjects[0].vel[1] = -3.7;
 		listObjects[0].canJump = false;
 	};
 	
@@ -350,10 +375,15 @@ function updateVel() {
 			listObjects[0].vel[0] = -3;
 		};
 	};
+	
+	observerX = listObjects[0].pos[0] - 400;
 	//Positions update with the speed vector
 	for(var i=0; i<listObjects.length; i++){
 		listObjects[i].pos[0] = listObjects[i].pos[0] + listObjects[i].vel[0];
 		listObjects[i].pos[1] = listObjects[i].pos[1] + listObjects[i].vel[1];
+	};
+	for(var i=0; i<listObjects.length; i++){
+		listObjects[i].pos[0] = listObjects[i].pos[0] - observerX;
 	};
 };
 
@@ -397,9 +427,12 @@ function checkAttacking(){
 	};
 	
 	//Updating direction of the knight
-	if(keys["left"] && keys["right"]) {}
-	if(keys["left"] && listObjects[0].direction == "r" && !listObjects[0].isDashing) listObjects[0].direction = "l";
-	if(keys["right"] && listObjects[0].direction == "l" && !listObjects[0].isDashing) listObjects[0].direction = "r";
+	if(keys["left"] && keys["right"]) {
+		if(listObjects[0].vel[0]>0) listObjects[0].direction = "r";
+		else listObjects[0].direction = "l";
+	}
+	else if(keys["left"] && listObjects[0].direction == "r" && !listObjects[0].isDashing) listObjects[0].direction = "l";
+	else if(keys["right"] && listObjects[0].direction == "l" && !listObjects[0].isDashing) listObjects[0].direction = "r";
 };
 
 
@@ -438,11 +471,54 @@ function resetDashCooldown(){
 function updateLife(){
 	if(currentLife < 0) currentLife = 0;
 	for(var i=0; i<lifeMasks.length; i++){
-		if(i<currentLife) lifeMasks[i].skin = "maskShard.svg";
-		else lifeMasks[i].skin = "emptyMaskShard.svg";
+		if(i<currentLife) lifeMasks[i].skin = "images/maskShard.svg";
+		else lifeMasks[i].skin = "images/emptyMaskShard.svg";
 	}
-	for(var i=0; i<lifeMasks.length; i++){
-		lifeMasks[i].draw();
+};
+
+
+
+//Animation in general
+//Will be all commented in the future
+var flagWalk2 = true;
+function walk(){
+	if(flagWalk2){
+		listObjects[0].skin = "images/knightWalk1.svg";
+		flagWalk2 = false;
+	}else{
+		listObjects[0].skin = "images/knightWalk2.svg";
+		flagWalk2 = true;
+	};
+};
+var knightAnimation;
+var flagWalk1 = false;
+var intervalWalk;
+function animate(){
+	knightAnimation = "idle";
+	if(listObjects[0].isDashing) knightAnimation = "dashing";
+	else if(listObjects[1].inScreen) knightAnimation = "attackingH";
+	else if(listObjects[0].vel[0]!=0) knightAnimation = "walking";
+	
+	
+	if(knightAnimation!="walking"){
+		if(flagWalk1){
+			clearInterval(intervalWalk);
+			flagWalk1 = false;
+		};
+	};
+	switch(knightAnimation){
+		case "attackingH":
+			listObjects[0].skin = "images/knightHorAttack.svg";
+			break;
+		case "dashing":
+			listObjects[0].skin = "images/knightDash.svg";
+			break;
+		case "walking":
+			if(!flagWalk1) intervalWalk = setInterval(walk,200);
+			flagWalk1 = true;
+			break;
+		default:
+			listObjects[0].skin = "images/knightIdle.svg";
 	};
 };
 
@@ -454,6 +530,7 @@ function draw() {
 	updateVel();
 	updateCollisions();
 	updateLife();
+	animate();
 	
 	//Drawing objects
 	for(var i=0; i<listObjects.length; i++){	
@@ -461,9 +538,15 @@ function draw() {
 		else if(listObjects[i].inScreen) listObjects[i].draw();
 		else listObjects[i].remove();
 	};
+	
+	//Drawing lifemasks
+	for(var i=0; i<lifeMasks.length; i++){
+		lifeMasks[i].draw();
+	};
 };
 
 
 
 //Calling the function draw every 5ms
 setInterval(draw,5);
+
