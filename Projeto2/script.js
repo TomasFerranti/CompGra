@@ -427,12 +427,14 @@ function checkAttacking(){
 	};
 	
 	//Updating direction of the knight
-	if(keys["left"] && keys["right"]) {
-		if(listObjects[0].vel[0]>0) listObjects[0].direction = "r";
-		else listObjects[0].direction = "l";
-	}
-	else if(keys["left"] && listObjects[0].direction == "r" && !listObjects[0].isDashing) listObjects[0].direction = "l";
-	else if(keys["right"] && listObjects[0].direction == "l" && !listObjects[0].isDashing) listObjects[0].direction = "r";
+	if(!listObjects[1].inScreen){
+		if(keys["left"] && keys["right"]) {
+			if(listObjects[0].vel[0]>0) listObjects[0].direction = "r";
+			else listObjects[0].direction = "l";
+		}
+		else if(keys["left"] && listObjects[0].direction == "r" && !listObjects[0].isDashing) listObjects[0].direction = "l";
+		else if(keys["right"] && listObjects[0].direction == "l" && !listObjects[0].isDashing) listObjects[0].direction = "r";
+	};
 };
 
 
@@ -496,8 +498,11 @@ var intervalWalk;
 function animate(){
 	knightAnimation = "idle";
 	if(listObjects[0].isDashing) knightAnimation = "dashing";
-	else if(listObjects[1].inScreen) knightAnimation = "attackingH";
-	else if(listObjects[0].vel[0]!=0) knightAnimation = "walking";
+	else if(listObjects[1].inScreen){
+		if(listObjects[1].direction == "u") knightAnimation = "attackingU";
+		else if(listObjects[1].direction == "d") knightAnimation = "attackingD";
+		else knightAnimation = "attackingH";
+	}else if(listObjects[0].vel[0]!=0) knightAnimation = "walking";
 	
 	
 	if(knightAnimation!="walking"){
@@ -509,6 +514,12 @@ function animate(){
 	switch(knightAnimation){
 		case "attackingH":
 			listObjects[0].skin = "images/knightHorAttack.svg";
+			break;
+		case "attackingU":
+			listObjects[0].skin = "images/knightUpAttack.svg";
+			break;
+		case "attackingD":
+			listObjects[0].skin = "images/knightDownAttack.svg";
 			break;
 		case "dashing":
 			listObjects[0].skin = "images/knightDash.svg";
