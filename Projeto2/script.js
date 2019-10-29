@@ -1,5 +1,5 @@
 var svg = document.getElementById("mainSvg");
-
+//html, body {margin: 0; height: 100%; overflow: hidden}
 var idObject = 0;
 
 //Generate points of a rectangle
@@ -212,7 +212,6 @@ listObjects.push(new Objeto([80,80],false,[400,470],false,false));
 listObjects.push(new Objeto([800,50],true,[0,550],false,false));
 //Platforms
 listObjects.push(new Objeto([50,20],true,[150,500],false,false));
-listObjects.push(new Objeto([50,20],true,[350,400],false,false));
 listObjects.push(new Objeto([50,20],true,[550,300],false,false));
 listObjects.push(new Objeto([100,20],true,[700,200],false,false));
 //Border
@@ -224,6 +223,15 @@ var currentLife = 5;
 for(i=0;i<5;i++) lifeMasks.push(new Objeto([40,60],false,[(45*i),0],false,false));
 //Spikes
 listObjects.push(new Objeto([46,50],true,[152,450],true,1));
+
+listObjects.push(new Objeto([50,20],true,[850,500],false,false));
+listObjects.push(new Objeto([46,50],true,[852,450],true,1));
+
+listObjects.push(new Objeto([50,20],true,[1250,500],false,false));
+listObjects.push(new Objeto([46,50],true,[1252,450],true,1));
+
+listObjects.push(new Objeto([50,20],true,[1650,500],false,false));
+listObjects.push(new Objeto([46,50],true,[1652,450],true,1));
 };
 
 //Special attributes
@@ -237,7 +245,10 @@ listObjects[0].invulnerable = false;
 listObjects[0].skin = "images/knightIdle.svg";
 listObjects[1].skin = "images/slash.svg";
 listObjects[2].color = "e1a95f";
-listObjects[7].skin = "images/spikes.svg";
+listObjects[6].skin = "images/spikes.svg";
+listObjects[8].skin = "images/spikes.svg";
+listObjects[10].skin = "images/spikes.svg";
+listObjects[12].skin = "images/spikes.svg";
 
 
 
@@ -502,6 +513,9 @@ function animate(){
 		if(listObjects[1].direction == "u") knightAnimation = "attackingU";
 		else if(listObjects[1].direction == "d") knightAnimation = "attackingD";
 		else knightAnimation = "attackingH";
+	}else if(!listObjects[0].canJump){
+		if(listObjects[0].vel[1]<0) knightAnimation = "jumping";
+		else knightAnimation = "falling";
 	}else if(listObjects[0].vel[0]!=0) knightAnimation = "walking";
 	
 	
@@ -523,6 +537,12 @@ function animate(){
 			break;
 		case "dashing":
 			listObjects[0].skin = "images/knightDash.svg";
+			break;
+		case "jumping":
+			listObjects[0].skin = "images/knightJumping.svg";
+			break;
+		case "falling":
+			listObjects[0].skin = "images/knightFalling.svg";
 			break;
 		case "walking":
 			if(!flagWalk1) intervalWalk = setInterval(walk,200);
