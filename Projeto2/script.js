@@ -1,6 +1,18 @@
 var svg = document.getElementById("mainSvg");
-//html, body {margin: 0; height: 100%; overflow: hidden}
 var idObject = 0;
+
+//Intersection between two line segments
+function intersects(a,b,c,d,p,q,r,s) {
+  var det, gamma, lambda;
+  det = (c - a) * (s - q) - (r - p) * (d - b);
+  if (det === 0) {
+    return false;
+  } else {
+    lambda = ((s - q) * (r - a) + (p - r) * (s - b)) / det;
+    gamma = ((b - d) * (r - a) + (c - a) * (s - b)) / det;
+    return (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1);
+  }
+};
 
 //Generate points of a rectangle
 function rectanglePoints(x,y,width,height){
@@ -17,7 +29,6 @@ class Objeto {
         this.id = "obj"+idObject;
 		this.width = size[0];
 		this.height = size[1];
-		idObject=idObject+1;
 		this.drawed = false;
 		this.solid = solid;
 		this.pos = pos;
@@ -27,9 +38,14 @@ class Objeto {
 		this.skin = undefined;
 		this.direction = "r";
 		this.color = "grey";
+		this.type = undefined;
+		this.hp = undefined;
+		
+		idObject=idObject+1;
 		
 		//SVG Path
 		var points = rectanglePoints(0,0,size[0],size[1]);
+		points.push(points[0]);
 		if(points.length==0) {
 			this.path = "";
 			return;
@@ -40,8 +56,6 @@ class Objeto {
 		for(var i=1;i<points.length;i++){
 			p = p + " L"+points[i][0]+" "+points[i][1];
 		}
-		
-		p = p +" L"+points[0][0]+" "+points[0][1];
 		
 		this.path = p;
     }
@@ -203,9 +217,8 @@ $("body").keyup(function (event) {
 //Game objects
 {
 var listObjects = [];
-var lifeMasks = [];
 //Knight
-listObjects.push(new Objeto([40,80],false,[280,470],false,false));
+listObjects.push(new Objeto([40,80],false,[400,470],false,false));
 //Weapon
 listObjects.push(new Objeto([80,80],false,[400,470],false,false));
 //Ground
@@ -214,25 +227,38 @@ listObjects.push(new Objeto([800,50],true,[0,550],false,false));
 listObjects.push(new Objeto([50,20],true,[150,500],false,false));
 listObjects.push(new Objeto([50,20],true,[550,300],false,false));
 listObjects.push(new Objeto([100,20],true,[700,200],false,false));
-//Border
-//listObjects.push(new Objeto([50,600],true,[-50,0],false,false));
-//listObjects.push(new Objeto([800,50],true,[0,-50],false,false));
-//listObjects.push(new Objeto([50,600],true,[800,0],false,false));
-//Life masks
-var currentLife = 5;
-for(i=0;i<5;i++) lifeMasks.push(new Objeto([40,60],false,[(45*i),0],false,false));
 //Spikes
 listObjects.push(new Objeto([46,50],true,[152,450],true,1));
-
 listObjects.push(new Objeto([50,20],true,[850,500],false,false));
 listObjects.push(new Objeto([46,50],true,[852,450],true,1));
-
 listObjects.push(new Objeto([50,20],true,[1250,500],false,false));
 listObjects.push(new Objeto([46,50],true,[1252,450],true,1));
-
 listObjects.push(new Objeto([50,20],true,[1650,500],false,false));
 listObjects.push(new Objeto([46,50],true,[1652,450],true,1));
+
+//Life masks
+var lifeMasks = [];
+var currentLife = 5;
+for(i=0;i<5;i++) lifeMasks.push(new Objeto([40,60],false,[(45*i),0],false,false));
+
+//Enemies and their types
+listObjects.push(new Objeto([50,50],false,[0,0],true,1));
+//Enemies types
+listObjects[idObject-6].type = "smallFly";
+listObjects[idObject-6].skin = "images/smallFly.svg";
+listObjects[idObject-6].hp = 2;
+listObjects.push(new Objeto([500,50],true,[1800,550],false,false));
+//Skins
+listObjects[1].skin = "images/slash.svg";
+listObjects[2].color = "e1a95f";
+listObjects[6].skin = "images/spikes.svg";
+listObjects[8].skin = "images/spikes.svg";
+listObjects[10].skin = "images/spikes.svg";
+listObjects[12].skin = "images/spikes.svg";
 };
+
+
+
 
 //Special attributes
 listObjects[1].inScreen = false;
@@ -241,17 +267,8 @@ listObjects[0].isDashing = false;
 listObjects[0].canDash = true;
 listObjects[0].invulnerable = false;
 
-//Skins
-listObjects[0].skin = "images/knightIdle.svg";
-listObjects[1].skin = "images/slash.svg";
-listObjects[2].color = "e1a95f";
-listObjects[6].skin = "images/spikes.svg";
-listObjects[8].skin = "images/spikes.svg";
-listObjects[10].skin = "images/spikes.svg";
-listObjects[12].skin = "images/spikes.svg";
 
-
-
+var objectsHit = [];
 //Collision checking
 function checkCollisions(object1,object2){
 	var center1 = [object1.pos[0]+object1.width/2,object1.pos[1]+object1.height/2];
@@ -296,9 +313,6 @@ function updateCollisions(){
 					case "l":
 						listObjects[0].vel[0] = 3;
 						break;
-					case "u":
-						listObjects[0].vel[1] = 4;
-						break;
 					case "d":
 						listObjects[0].vel[1] = -4;
 						break;
@@ -306,7 +320,21 @@ function updateCollisions(){
 				};
 			};
 			
-			//Hitting effect
+			//Hit damage
+			if(result[0] && listObjects[i].hp){
+				if(objectsHit.indexOf(i) == -1){
+					listObjects[i].hp = listObjects[i].hp - 1;
+					objectsHit.push(i);
+				};
+			};
+		};
+		
+		//Removing objects with life below or equal 0
+		for(i=2;i<listObjects.length;i++){
+			if(listObjects[i].hp == 0){
+				listObjects[i].remove();
+				listObjects.splice(i,1);
+			};
 		};
 	};
 	
@@ -322,15 +350,27 @@ function updateCollisions(){
 			listObjects[0].pos[1] = listObjects[0].pos[1] + result[1][1];
 		};
 		if(result[0] && listObjects[i].harmable && !listObjects[0].invulnerable){
-			console.log(listObjects[0].invulnerable);
 			currentLife = currentLife - listObjects[i].harmable;
 			listObjects[0].invulnerable = true;
 			intervalResetInvulnerability = setInterval(resetInvulnerability,618);
 		};
 	};	
-	if(flagInAir) listObjects[0].canJump = false;	
+	
+	//Collision between enemies and objects
+	for(j=2;j<listObjects.length;j++){
+		for(i=2;i<listObjects.length;i++){
+			var result = checkCollisions(listObjects[i],listObjects[j]);
+			if(result[0] && listObjects[i].solid && listObjects[j].type!=undefined){
+				if(result[1][1] > 0 && listObjects[j].vel[1]<0) listObjects[j].vel[1] = 0;
+				listObjects[j].pos[0] = listObjects[j].pos[0] + result[1][0];
+				listObjects[j].pos[1] = listObjects[j].pos[1] + result[1][1];
+			};
+		};	
+	};
 	return;
 };
+
+
 
 //Function that resets knight invulnerability
 var intervalResetInvulnerability;
@@ -341,10 +381,65 @@ function resetInvulnerability(){
 
 
 
+//Enemies movement mechanic
+function updateEnemies(){
+	//Enemys movement
+	for(var i=0; i<listObjects.length; i++){
+		switch(listObjects[i].type){
+			case "smallFly":
+				var knightInSight = true;
+				var midX0 = listObjects[i].pos[0] + listObjects[i].width/2;
+				var midY0 = listObjects[i].pos[1] + listObjects[i].height/2;
+				var midX = listObjects[0].pos[0] + listObjects[0].width/2;
+				var midY = listObjects[0].pos[1] + listObjects[0].height/2;
+				if(midX>midX0) listObjects[i].direction = "r";
+				else listObjects[i].direction = "l";
+				var flagInnerLoop1 = false;
+				for(var j=2; j<listObjects.length; j++){
+					if(listObjects[j].solid && i!=j){
+						var listPoints = rectanglePoints(listObjects[j].pos[0],listObjects[j].pos[1],listObjects[j].width,listObjects[j].height);
+						listPoints.push(listPoints[0]);
+						for(var k=0; k<listPoints.length-1; k++){
+							if(intersects(midX0,midY0,midX,midY,listPoints[k][0],listPoints[k][1],listPoints[k+1][0],listPoints[k+1][1])){
+								knightInSight = false;
+								flagInnerLoop1 = true;
+								break;
+							};
+						};
+					};
+					if(flagInnerLoop1) break;
+				};
+				if(knightInSight){
+					var x = listObjects[0].pos[0] - listObjects[i].pos[0] - listObjects[i].width/2 + listObjects[0].width/2;
+					var y = listObjects[0].pos[1] - listObjects[i].pos[1] - listObjects[i].height/2 + listObjects[0].height/2;
+					var mod = Math.sqrt(x**2+y**2);
+					x = x/mod;
+					y = y/mod;
+					listObjects[i].vel[0] = x;
+					listObjects[i].vel[1] = y;
+				}else{
+					if(Math.abs(listObjects[i].vel[0])+Math.abs(listObjects[i].vel[1])<0.1){
+						listObjects[i].vel[0] = 0;
+						listObjects[i].vel[1] = 0;
+					}else{
+						listObjects[i].vel[0] = 0.9*listObjects[i].vel[0];
+						listObjects[i].vel[1] = 0.9*listObjects[i].vel[1];
+					};
+				};
+				break;
+			default:
+		};
+	};
+};
+
+
+
 //Physics and user input
 var observerX = 0;
-var observerY = 0;
 function updateVel() {	
+	//Enemies speed
+	updateEnemies();
+	
 	//Knight movement
 	if(keys["left"]) listObjects[0].vel[0] = -1.5;
 	else if(keys["right"]) listObjects[0].vel[0] = 1.5;
@@ -355,6 +450,7 @@ function updateVel() {
 	
 	//Attack
 	if(keys["z"] && weaponInCooldown && !listObjects[0].isDashing){
+		objectsHit = [];
 		listObjects[1].inScreen = true;
 		weaponInCooldown = false;
 		intervalResetWeapon = setInterval(resetWeapon, 300);
@@ -580,4 +676,3 @@ function draw() {
 
 //Calling the function draw every 5ms
 setInterval(draw,5);
-
