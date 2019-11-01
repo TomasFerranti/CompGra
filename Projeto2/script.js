@@ -136,7 +136,10 @@ var keys = {
 	c: false
 };
 
+var music = document.getElementById("music");
+var currentMusic = document.getElementById("currentMusic");
 $("body").keydown(function (event) {
+ music.play();
  var buttom = event.keyCode;
  if(!dead){
 	 //left code = 37
@@ -221,7 +224,7 @@ $("body").keyup(function (event) {
 	var listObjects = [];
 	
 	//Knight
-	listObjects.push(new Objeto([40,80],false,[400,450],false,false));
+	listObjects.push(new Objeto([40,80],false,[6000,450],false,false));
 	
 	//Weapon
 	listObjects.push(new Objeto([80,80],false,[400,470],false,false));
@@ -400,6 +403,7 @@ function checkAttacking(){
 
 //Physics and user input
 var observerX = 0;
+var totalObserverX = 0;
 function updateVel() {	
 	//Enemies speed
 	updateEnemies();
@@ -457,6 +461,7 @@ function updateVel() {
 		listObjects[i].pos[0] = listObjects[i].pos[0] - observerX;
 	};
 	
+	totalObserverX = totalObserverX - observerX;
 	lastSafeSpot[0] = lastSafeSpot[0] - observerX;
 };
 
@@ -530,17 +535,24 @@ function updateCollisions(){
 				//Bosses activator
 				if(listObjects[i].type=="bossActivator1"){
 					var object = new Objeto([240,200],false,[listObjects[i].pos[0]+200,0],true,1);
+					currentMusic.src = "music/boss.mp3";
+					music.load();
+					music.play();
 					object.type = "vengeflyKing";
 					object.skin = "images/vengeflyKing.svg";
 					object.hp = 20;
 					object.vel = [0,1];
 					listObjects.push(object);
+					breakableGround(5780+totalObserverX,450,30,100,"red",10);
 				};
 				if(listObjects[i].type=="vengeflyKing"){
 					//tutorial 1 400/50
 					var object = new Objeto([200,50],false,[400,250],false,false);
 					object.skin = "images/theEnd.svg";
 					listObjects.push(object);
+					currentMusic.src = "music/queenGardens.mp3";
+					music.load();
+					music.play();
 				};
 				
 				//Removing
