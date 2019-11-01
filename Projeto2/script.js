@@ -138,40 +138,42 @@ var keys = {
 
 $("body").keydown(function (event) {
  var buttom = event.keyCode;
- //left code = 37
- if(buttom==37){
-	keys["left"] = true;
- }
- 
- //up code = 38
- if(buttom==38){
-	keys["up"] = true;
- }
- 
- //right code = 39
- if(buttom==39){
-	keys["right"] = true;
- }
- 
- //down code = 40
- if(buttom==40){
-	keys["down"] = true;
- }
- 
- //z code = 90
- if(buttom==90){
-	keys["z"] = true;
- }
- 
- //x code = 88
- if(buttom==88){
-	keys["x"] = true;
- }
- 
- //c code = 67
- if(buttom==67){
-	keys["c"] = true;
- }
+ if(!dead){
+	 //left code = 37
+	 if(buttom==37){
+		keys["left"] = true;
+	 }
+	 
+	 //up code = 38
+	 if(buttom==38){
+		keys["up"] = true;
+	 }
+	 
+	 //right code = 39
+	 if(buttom==39){
+		keys["right"] = true;
+	 }
+	 
+	 //down code = 40
+	 if(buttom==40){
+		keys["down"] = true;
+	 }
+	 
+	 //z code = 90
+	 if(buttom==90){
+		keys["z"] = true;
+	 }
+	 
+	 //x code = 88
+	 if(buttom==88){
+		keys["x"] = true;
+	 }
+	 
+	 //c code = 67
+	 if(buttom==67){
+		keys["c"] = true;
+	 }
+ };
 })
 
 $("body").keyup(function (event) {
@@ -216,47 +218,124 @@ $("body").keyup(function (event) {
 
 //Game objects
 {
-var listObjects = [];
-//Knight
-listObjects.push(new Objeto([40,80],false,[400,470],false,false));
-//Weapon
-listObjects.push(new Objeto([80,80],false,[400,470],false,false));
-//Ground
-listObjects.push(new Objeto([800,50],true,[0,550],false,false));
-//Platforms
-listObjects.push(new Objeto([50,20],true,[150,500],false,false));
-listObjects.push(new Objeto([50,20],true,[550,300],false,false));
-listObjects.push(new Objeto([100,20],true,[700,200],false,false));
-//Spikes
-listObjects.push(new Objeto([46,50],true,[152,450],true,1));
-listObjects.push(new Objeto([50,20],true,[850,500],false,false));
-listObjects.push(new Objeto([46,50],true,[852,450],true,1));
-listObjects.push(new Objeto([50,20],true,[1250,500],false,false));
-listObjects.push(new Objeto([46,50],true,[1252,450],true,1));
-listObjects.push(new Objeto([50,20],true,[1650,500],false,false));
-listObjects.push(new Objeto([46,50],true,[1652,450],true,1));
+	var listObjects = [];
+	
+	//Knight
+	listObjects.push(new Objeto([40,80],false,[400,450],false,false));
+	
+	//Weapon
+	listObjects.push(new Objeto([80,80],false,[400,470],false,false));
+	
+	//Some functions to make the creation of objects easier
+	function ground(x,y,width,height,color){
+		object = new Objeto([width,height],true,[x,y],false,false);
+		object.color = color;
+		listObjects.push(object);
+		return;
+	};
+	
+	function breakableGround(x,y,width,height,color,hp){
+		object = new Objeto([width,height],true,[x,y],false,false);
+		object.color = color;
+		object.hp = hp;
+		listObjects.push(object);
+		return;
+	};
+	
+	function platforms(x,y,width,height){
+		object = new Objeto([width,height],true,[x,y],false,false);
+		listObjects.push(object);
+		return;
+	};
+	
+	function spikes(x,y,dire){
+		object = new Objeto([50,50],true,[x,y],true,1);
+		object.skin = "images/spikes.svg";
+		object.direction = dire;
+		listObjects.push(object);
+		return;
+	};
+	
+	function smallFly(x,y){
+		object = new Objeto([50,50],false,[x,y],true,1);
+		object.type = "smallFly";
+		object.skin = "images/smallFly.svg";
+		object.hp = 2;
+		listObjects.push(object);
+		return;
+	};
+	
+	ground(-500,550,2300,50,"e1a95f");
+	breakableGround(-400,0,400,550,"e1a95f",1);
+	platforms(800,-200,50,650);
+	breakableGround(800,450,50,100,"red",1);
+	platforms(1200,430,50,25);
+	platforms(1400,330,50,25);
+	platforms(1600,250,200,300);
+	platforms(1600,0,400,150);
+	platforms(1900,250,100,300);
+	ground(1900,550,4800,50,"e1a95f");
+	platforms(2400,300,200,250);
+	spikes(2350,500,"r");
+	for(var i=0; i<19; i++) spikes(2600+50*i,500,"r");
+	platforms(3550,300,200,250);
+	platforms(4000,0,30,450);
+	smallFly(4250,50);
+	platforms(4500,0,30,450);
+	breakableGround(4500,450,30,100,"red",3);
+	platforms(4700,0,30,450);
+	platforms(4900,100,30,450);
+	for(var i=0; i<7; i++){
+		spikes(4730,100+i*50,"d");
+		spikes(4850,100+i*50,"u");
+	};
+	platforms(4930,100,300,30);
+	platforms(5280,100,500,30);
+	platforms(5780,-200,30,650);
+	breakableGround(5780,450,30,100,"red",5);
+	platforms(5030,420,250,30);
+	platforms(5380,420,200,30);
+	platforms(6200,420,200,20);
+	platforms(6500,350,200,20);
+	smallFly(4980,150);
+	smallFly(5680,150);
+	smallFly(5580,500);
+	
+	//Tutorials
+	//tutorial 1 400/50
+	var object = new Objeto([400,50],false,[400,200],false,false);
+	object.skin = "images/tutorial1.svg";
+	listObjects.push(object);
+	//tutorial 2 400/50
+	var object = new Objeto([400,50],false,[950,200],false,false);
+	object.skin = "images/tutorial2.svg";
+	listObjects.push(object);
+	//tutorial 3 400/50
+	var object = new Objeto([400,50],false,[1600,50],false,false);
+	object.skin = "images/tutorial3.svg";
+	listObjects.push(object);
+	//tutorial 4 400/100
+	var object = new Objeto([400,100],false,[2000,100],false,false);
+	object.skin = "images/tutorial4.svg";
+	listObjects.push(object);
+	
+	//Lamp
+	var object = new Objeto([40,60],false,[6600,490],false,false);
+	object.hp = 1;
+	object.skin = "images/lamp.svg";
+	object.type = "bossActivator1";
+	listObjects.push(object);
+	
+	
+	//Life masks
+	var lifeMasks = [];
+	var currentLife = 5;
+	for(i=0;i<5;i++) lifeMasks.push(new Objeto([40,60],false,[(45*i),0],false,false));
 
-//Life masks
-var lifeMasks = [];
-var currentLife = 5;
-for(i=0;i<5;i++) lifeMasks.push(new Objeto([40,60],false,[(45*i),0],false,false));
-
-//Enemies and their types
-listObjects.push(new Objeto([50,50],false,[0,0],true,1));
-//Enemies types
-listObjects[idObject-6].type = "smallFly";
-listObjects[idObject-6].skin = "images/smallFly.svg";
-listObjects[idObject-6].hp = 2;
-listObjects.push(new Objeto([500,50],true,[1800,550],false,false));
-//Skins
-listObjects[1].skin = "images/slash.svg";
-listObjects[2].color = "e1a95f";
-listObjects[6].skin = "images/spikes.svg";
-listObjects[8].skin = "images/spikes.svg";
-listObjects[10].skin = "images/spikes.svg";
-listObjects[12].skin = "images/spikes.svg";
+	//Special skins
+	listObjects[1].skin = "images/slash.svg";
+	listObjects[2].color = "e1a95f";
 };
-
 
 
 
@@ -268,6 +347,122 @@ listObjects[0].canDash = true;
 listObjects[0].invulnerable = false;
 
 
+
+//Attack and knight directions
+function checkAttacking(){	
+	//Updating direction of the attack
+	if(!listObjects[1].inScreen){
+		listObjects[1].direction = listObjects[0].direction;
+		if(keys["left"]){
+			listObjects[1].direction = "l";
+		}else if(keys["right"]){
+			listObjects[1].direction = "r";
+		}else if(keys["up"]){
+			listObjects[1].direction = "u";
+		}else if(keys["down"]){
+			listObjects[1].direction = "d";
+		};
+	};
+	
+	//Updating position of the attack
+	switch(listObjects[1].direction){
+		case "l":
+			listObjects[1].pos[0] = listObjects[0].pos[0] + listObjects[0].width/2 - listObjects[1].width;
+			listObjects[1].pos[1] = listObjects[0].pos[1];
+			break;
+		case "r":
+			listObjects[1].pos[0] = listObjects[0].pos[0] + listObjects[0].width/2;
+			listObjects[1].pos[1] = listObjects[0].pos[1];
+			break;
+		case "d":
+			listObjects[1].pos[0] = listObjects[0].pos[0] + listObjects[0].width/2 - listObjects[1].width/2;
+			listObjects[1].pos[1] = listObjects[0].pos[1] + listObjects[1].height/2;
+			break;
+		case "u":
+			listObjects[1].pos[0] = listObjects[0].pos[0] + listObjects[0].width/2 - listObjects[1].width/2;
+			listObjects[1].pos[1] = listObjects[0].pos[1] - listObjects[1].height/2;
+			break;
+		default:
+	};
+	
+	//Updating direction of the knight
+	if(!listObjects[1].inScreen){
+		if(keys["left"] && keys["right"]) {
+			if(listObjects[0].vel[0]>0) listObjects[0].direction = "r";
+			else listObjects[0].direction = "l";
+		}
+		else if(keys["left"] && listObjects[0].direction == "r" && !listObjects[0].isDashing) listObjects[0].direction = "l";
+		else if(keys["right"] && listObjects[0].direction == "l" && !listObjects[0].isDashing) listObjects[0].direction = "r";
+	};
+};
+
+
+
+//Physics and user input
+var observerX = 0;
+function updateVel() {	
+	//Enemies speed
+	updateEnemies();
+	
+	//Knight movement
+	if(keys["left"]) listObjects[0].vel[0] = -1.5;
+	else if(keys["right"]) listObjects[0].vel[0] = 1.5;
+	else{
+		listObjects[0].vel[0] = 0.9*listObjects[0].vel[0];
+		if(Math.abs(listObjects[0].vel[0])<0.01) listObjects[0].vel[0] = 0;
+	};
+	
+	//Attack
+	if(keys["z"] && weaponInCooldown && !listObjects[0].isDashing){
+		objectsHit = [];
+		listObjects[1].inScreen = true;
+		weaponInCooldown = false;
+		intervalResetWeapon = setInterval(resetWeapon, 300);
+	};
+	
+	//Jump
+	if(keys["x"] && listObjects[0].canJump){
+		listObjects[0].vel[1] = -3.7;
+		listObjects[0].canJump = false;
+	};
+	
+	//Dash
+	if(keys["c"] && listObjects[0].canDash && !listObjects[1].inScreen){
+		listObjects[0].isDashing = true;
+		listObjects[0].canDash = false;
+		intervalResetDash = setInterval(resetDash, 500);		
+	};
+	
+	//Gravity
+	if(listObjects[0].vel[1]<3) listObjects[0].vel[1] += 0.05;
+	else listObjects[0].vel[1] = 3;
+	
+	//Dash speed
+	if(listObjects[0].isDashing){
+		listObjects[0].vel[1] = 0;
+		if(listObjects[0].direction == "r"){
+			listObjects[0].vel[0] = 3;
+		}else{
+			listObjects[0].vel[0] = -3;
+		};
+	};
+	
+	observerX = listObjects[0].pos[0] - 400;
+	//Positions update with the speed vector
+	for(var i=0; i<listObjects.length; i++){
+		listObjects[i].pos[0] = listObjects[i].pos[0] + listObjects[i].vel[0];
+		listObjects[i].pos[1] = listObjects[i].pos[1] + listObjects[i].vel[1];
+	};
+	for(var i=0; i<listObjects.length; i++){
+		listObjects[i].pos[0] = listObjects[i].pos[0] - observerX;
+	};
+	
+	lastSafeSpot[0] = lastSafeSpot[0] - observerX;
+};
+
+
+
+var lastSafeSpot = [];
 var objectsHit = [];
 //Collision checking
 function checkCollisions(object1,object2){
@@ -332,6 +527,23 @@ function updateCollisions(){
 		//Removing objects with life below or equal 0
 		for(i=2;i<listObjects.length;i++){
 			if(listObjects[i].hp == 0){
+				//Bosses activator
+				if(listObjects[i].type=="bossActivator1"){
+					var object = new Objeto([240,200],false,[listObjects[i].pos[0]+200,0],true,1);
+					object.type = "vengeflyKing";
+					object.skin = "images/vengeflyKing.svg";
+					object.hp = 20;
+					object.vel = [0,1];
+					listObjects.push(object);
+				};
+				if(listObjects[i].type=="vengeflyKing"){
+					//tutorial 1 400/50
+					var object = new Objeto([200,50],false,[400,250],false,false);
+					object.skin = "images/theEnd.svg";
+					listObjects.push(object);
+				};
+				
+				//Removing
 				listObjects[i].remove();
 				listObjects.splice(i,1);
 			};
@@ -348,6 +560,9 @@ function updateCollisions(){
 			if(result[1][1] > 0 && listObjects[0].vel[1]<0) listObjects[0].vel[1] = 0;
 			listObjects[0].pos[0] = listObjects[0].pos[0] + result[1][0];
 			listObjects[0].pos[1] = listObjects[0].pos[1] + result[1][1];
+			if(!listObjects[i].harmable && result[1][1]<0){
+				lastSafeSpot = listObjects[0].pos.slice();
+			};
 		};
 		if(result[0] && listObjects[i].harmable && !listObjects[0].invulnerable){
 			currentLife = currentLife - listObjects[i].harmable;
@@ -367,211 +582,13 @@ function updateCollisions(){
 			};
 		};	
 	};
+	
+	//Knight falling in void
+	if(listObjects[0].pos[1]>600){
+		currentLife = currentLife - 1;
+		listObjects[0].pos = lastSafeSpot.slice();
+	};
 	return;
-};
-
-
-
-//Function that resets knight invulnerability
-var intervalResetInvulnerability;
-function resetInvulnerability(){
-	listObjects[0].invulnerable = false;
-	clearInterval(intervalResetInvulnerability);
-};
-
-
-
-//Enemies movement mechanic
-function updateEnemies(){
-	//Enemys movement
-	for(var i=0; i<listObjects.length; i++){
-		switch(listObjects[i].type){
-			case "smallFly":
-				var knightInSight = true;
-				var midX0 = listObjects[i].pos[0] + listObjects[i].width/2;
-				var midY0 = listObjects[i].pos[1] + listObjects[i].height/2;
-				var midX = listObjects[0].pos[0] + listObjects[0].width/2;
-				var midY = listObjects[0].pos[1] + listObjects[0].height/2;
-				if(midX>midX0) listObjects[i].direction = "r";
-				else listObjects[i].direction = "l";
-				var flagInnerLoop1 = false;
-				for(var j=2; j<listObjects.length; j++){
-					if(listObjects[j].solid && i!=j){
-						var listPoints = rectanglePoints(listObjects[j].pos[0],listObjects[j].pos[1],listObjects[j].width,listObjects[j].height);
-						listPoints.push(listPoints[0]);
-						for(var k=0; k<listPoints.length-1; k++){
-							if(intersects(midX0,midY0,midX,midY,listPoints[k][0],listPoints[k][1],listPoints[k+1][0],listPoints[k+1][1])){
-								knightInSight = false;
-								flagInnerLoop1 = true;
-								break;
-							};
-						};
-					};
-					if(flagInnerLoop1) break;
-				};
-				if(knightInSight){
-					var x = listObjects[0].pos[0] - listObjects[i].pos[0] - listObjects[i].width/2 + listObjects[0].width/2;
-					var y = listObjects[0].pos[1] - listObjects[i].pos[1] - listObjects[i].height/2 + listObjects[0].height/2;
-					var mod = Math.sqrt(x**2+y**2);
-					x = x/mod;
-					y = y/mod;
-					listObjects[i].vel[0] = x;
-					listObjects[i].vel[1] = y;
-				}else{
-					if(Math.abs(listObjects[i].vel[0])+Math.abs(listObjects[i].vel[1])<0.1){
-						listObjects[i].vel[0] = 0;
-						listObjects[i].vel[1] = 0;
-					}else{
-						listObjects[i].vel[0] = 0.9*listObjects[i].vel[0];
-						listObjects[i].vel[1] = 0.9*listObjects[i].vel[1];
-					};
-				};
-				break;
-			default:
-		};
-	};
-};
-
-
-
-//Physics and user input
-var observerX = 0;
-function updateVel() {	
-	//Enemies speed
-	updateEnemies();
-	
-	//Knight movement
-	if(keys["left"]) listObjects[0].vel[0] = -1.5;
-	else if(keys["right"]) listObjects[0].vel[0] = 1.5;
-	else{
-		listObjects[0].vel[0] = 0.9*listObjects[0].vel[0];
-		if(Math.abs(listObjects[0].vel[0])<0.01) listObjects[0].vel[0] = 0;
-	};
-	
-	//Attack
-	if(keys["z"] && weaponInCooldown && !listObjects[0].isDashing){
-		objectsHit = [];
-		listObjects[1].inScreen = true;
-		weaponInCooldown = false;
-		intervalResetWeapon = setInterval(resetWeapon, 300);
-	};
-	
-	//Jump
-	if(keys["x"] && listObjects[0].canJump){
-		listObjects[0].vel[1] = -3.7;
-		listObjects[0].canJump = false;
-	};
-	
-	//Dash
-	if(keys["c"] && listObjects[0].canDash && !listObjects[1].inScreen){
-		listObjects[0].isDashing = true;
-		listObjects[0].canDash = false;
-		intervalResetDash = setInterval(resetDash, 500);		
-	};
-	
-	//Gravity
-	if(listObjects[0].vel[1]<3) listObjects[0].vel[1] += 0.05;
-	else listObjects[0].vel[1] = 3;
-	
-	//Dash speed
-	if(listObjects[0].isDashing){
-		listObjects[0].vel[1] = 0;
-		if(listObjects[0].direction == "r"){
-			listObjects[0].vel[0] = 3;
-		}else{
-			listObjects[0].vel[0] = -3;
-		};
-	};
-	
-	observerX = listObjects[0].pos[0] - 400;
-	//Positions update with the speed vector
-	for(var i=0; i<listObjects.length; i++){
-		listObjects[i].pos[0] = listObjects[i].pos[0] + listObjects[i].vel[0];
-		listObjects[i].pos[1] = listObjects[i].pos[1] + listObjects[i].vel[1];
-	};
-	for(var i=0; i<listObjects.length; i++){
-		listObjects[i].pos[0] = listObjects[i].pos[0] - observerX;
-	};
-};
-
-
-
-//Attack and knight directions
-function checkAttacking(){	
-	//Updating direction of the attack
-	if(!listObjects[1].inScreen){
-		listObjects[1].direction = listObjects[0].direction;
-		if(keys["left"]){
-			listObjects[1].direction = "l";
-		}else if(keys["right"]){
-			listObjects[1].direction = "r";
-		}else if(keys["up"]){
-			listObjects[1].direction = "u";
-		}else if(keys["down"]){
-			listObjects[1].direction = "d";
-		};
-	};
-	
-	//Updating position of the attack
-	switch(listObjects[1].direction){
-		case "l":
-			listObjects[1].pos[0] = listObjects[0].pos[0] + listObjects[0].width/2 - listObjects[1].width;
-			listObjects[1].pos[1] = listObjects[0].pos[1];
-			break;
-		case "r":
-			listObjects[1].pos[0] = listObjects[0].pos[0] + listObjects[0].width/2;
-			listObjects[1].pos[1] = listObjects[0].pos[1];
-			break;
-		case "d":
-			listObjects[1].pos[0] = listObjects[0].pos[0] + listObjects[0].width/2 - listObjects[1].width/2;
-			listObjects[1].pos[1] = listObjects[0].pos[1] + listObjects[1].height/2;
-			break;
-		case "u":
-			listObjects[1].pos[0] = listObjects[0].pos[0] + listObjects[0].width/2 - listObjects[1].width/2;
-			listObjects[1].pos[1] = listObjects[0].pos[1] - listObjects[1].height/2;
-			break;
-		default:
-	};
-	
-	//Updating direction of the knight
-	if(!listObjects[1].inScreen){
-		if(keys["left"] && keys["right"]) {
-			if(listObjects[0].vel[0]>0) listObjects[0].direction = "r";
-			else listObjects[0].direction = "l";
-		}
-		else if(keys["left"] && listObjects[0].direction == "r" && !listObjects[0].isDashing) listObjects[0].direction = "l";
-		else if(keys["right"] && listObjects[0].direction == "l" && !listObjects[0].isDashing) listObjects[0].direction = "r";
-	};
-};
-
-
-
-//Attack interval
-var weaponInCooldown = true;
-var intervalResetWeaponCooldown;
-var intervalResetWeapon;
-function resetWeapon(){
-	listObjects[1].inScreen = false;
-	weaponInCooldown = false;
-	intervalResetWeaponCooldown = setInterval(resetWeaponCooldown,500);
-	clearInterval(intervalResetWeapon);
-};
-function resetWeaponCooldown(){
-	weaponInCooldown = true;
-	clearInterval(intervalResetWeaponCooldown);
-};
-
-//Dash interval
-var intervalResetDashCooldown;
-var intervalResetDash;
-function resetDash(){
-	listObjects[0].isDashing = false;
-	intervalResetDashCooldown = setInterval(resetDashCooldown,1000);
-	clearInterval(intervalResetDash);
-};
-function resetDashCooldown(){
-	listObjects[0].canDash = true;
-	clearInterval(intervalResetDashCooldown);
 };
 
 
@@ -590,6 +607,7 @@ function updateLife(){
 //Animation in general
 //Will be all commented in the future
 var flagWalk2 = true;
+var dead = false;
 function walk(){
 	if(flagWalk2){
 		listObjects[0].skin = "images/knightWalk1.svg";
@@ -621,38 +639,163 @@ function animate(){
 			flagWalk1 = false;
 		};
 	};
-	switch(knightAnimation){
-		case "attackingH":
-			listObjects[0].skin = "images/knightHorAttack.svg";
-			break;
-		case "attackingU":
-			listObjects[0].skin = "images/knightUpAttack.svg";
-			break;
-		case "attackingD":
-			listObjects[0].skin = "images/knightDownAttack.svg";
-			break;
-		case "dashing":
-			listObjects[0].skin = "images/knightDash.svg";
-			break;
-		case "jumping":
-			listObjects[0].skin = "images/knightJumping.svg";
-			break;
-		case "falling":
-			listObjects[0].skin = "images/knightFalling.svg";
-			break;
-		case "walking":
-			if(!flagWalk1) intervalWalk = setInterval(walk,200);
-			flagWalk1 = true;
-			break;
-		default:
-			listObjects[0].skin = "images/knightIdle.svg";
+	
+	if(!dead){
+		switch(knightAnimation){
+			case "attackingH":
+				listObjects[0].skin = "images/knightHorAttack.svg";
+				break;
+			case "attackingU":
+				listObjects[0].skin = "images/knightUpAttack.svg";
+				break;
+			case "attackingD":
+				listObjects[0].skin = "images/knightDownAttack.svg";
+				break;
+			case "dashing":
+				listObjects[0].skin = "images/knightDash.svg";
+				break;
+			case "jumping":
+				listObjects[0].skin = "images/knightJumping.svg";
+				break;
+			case "falling":
+				listObjects[0].skin = "images/knightFalling.svg";
+				break;
+			case "walking":
+				if(!flagWalk1) intervalWalk = setInterval(walk,200);
+				flagWalk1 = true;
+				break;
+			default:
+				listObjects[0].skin = "images/knightIdle.svg";
+		};
 	};
+	
+	//Death
+	if(!dead && currentLife <= 0){
+		dead = true;
+		listObjects[0].remove();
+		var dir = listObjects[0].direction;
+		listObjects[0] = new Objeto([40,40],false,[listObjects[0].pos[0],listObjects[0].pos[1]+40],false,false);
+		listObjects[0].direction = dir;
+	};
+};
+
+
+
+//SUPPORT FUNCTIONS
+//Function that resets knight invulnerability
+var intervalResetInvulnerability;
+function resetInvulnerability(){
+	listObjects[0].invulnerable = false;
+	clearInterval(intervalResetInvulnerability);
+};
+
+//Enemies movement mechanic
+function updateEnemies(){
+	//Enemys movement
+	for(var i=0; i<listObjects.length; i++){
+		switch(listObjects[i].type){
+			case "smallFly":
+				if(!dead){
+					var knightInSight = true;
+					var midX0 = listObjects[i].pos[0] + listObjects[i].width/2;
+					var midY0 = listObjects[i].pos[1] + listObjects[i].height/2;
+					var midX = listObjects[0].pos[0] + listObjects[0].width/2;
+					var midY = listObjects[0].pos[1] + listObjects[0].height/2;
+					if(midX>midX0) listObjects[i].direction = "r";
+					else listObjects[i].direction = "l";
+					var flagInnerLoop1 = false;
+					for(var j=2; j<listObjects.length; j++){
+						if(listObjects[j].solid && i!=j){
+							var listPoints = rectanglePoints(listObjects[j].pos[0],listObjects[j].pos[1],listObjects[j].width,listObjects[j].height);
+							listPoints.push(listPoints[0]);
+							for(var k=0; k<listPoints.length-1; k++){
+								if(intersects(midX0,midY0,midX,midY,listPoints[k][0],listPoints[k][1],listPoints[k+1][0],listPoints[k+1][1])){
+									knightInSight = false;
+									flagInnerLoop1 = true;
+									break;
+								};
+							};
+						};
+						if(flagInnerLoop1) break;
+					};
+					if(knightInSight){
+						var x = listObjects[0].pos[0] - listObjects[i].pos[0] - listObjects[i].width/2 + listObjects[0].width/2;
+						var y = listObjects[0].pos[1] - listObjects[i].pos[1] - listObjects[i].height/2 + listObjects[0].height/2;
+						var mod = Math.sqrt(x**2+y**2);
+						x = x/mod;
+						y = y/mod;
+						listObjects[i].vel[0] = x;
+						listObjects[i].vel[1] = y;
+					}else{
+						if(Math.abs(listObjects[i].vel[0])+Math.abs(listObjects[i].vel[1])<0.1){
+							listObjects[i].vel[0] = 0;
+							listObjects[i].vel[1] = 0;
+						}else{
+							listObjects[i].vel[0] = 0.9*listObjects[i].vel[0];
+							listObjects[i].vel[1] = 0.9*listObjects[i].vel[1];
+						};
+					};
+				}else{
+					listObjects[i].vel[0] = Math.random()*2-1;
+					listObjects[i].vel[1] = Math.random()*2-1;
+				};
+				break;
+			case "vengeflyKing":
+				if(listObjects[i].vel[1]>0){
+					if(listObjects[i].pos[1] > 600 - listObjects[i].height){
+						if(Math.random()<0.3){
+							smallFly(Math.random()*800,-10);
+						};
+						listObjects[i].vel[1] = -1;
+						listObjects[i].pos[1] = listObjects[i].pos[1] - 2;
+					};
+				}else{
+					if(listObjects[i].pos[1] < 0){
+						if(Math.random()<0.3){
+							smallFly(Math.random()*800,-10);
+						};
+						listObjects[i].vel[1] = 1;
+						listObjects[i].pos[1] = listObjects[i].pos[1] + 2;
+					};
+				};
+			default:
+		};
+	};
+};
+
+//Attack interval
+var weaponInCooldown = true;
+var intervalResetWeaponCooldown;
+var intervalResetWeapon;
+function resetWeapon(){
+	listObjects[1].inScreen = false;
+	weaponInCooldown = false;
+	intervalResetWeaponCooldown = setInterval(resetWeaponCooldown,500);
+	clearInterval(intervalResetWeapon);
+};
+function resetWeaponCooldown(){
+	weaponInCooldown = true;
+	clearInterval(intervalResetWeaponCooldown);
+};
+
+//Dash interval
+var intervalResetDashCooldown;
+var intervalResetDash;
+function resetDash(){
+	listObjects[0].isDashing = false;
+	intervalResetDashCooldown = setInterval(resetDashCooldown,1000);
+	clearInterval(intervalResetDash);
+};
+function resetDashCooldown(){
+	listObjects[0].canDash = true;
+	clearInterval(intervalResetDashCooldown);
 };
 
 
 
 //Final drawing
 function draw() {
+	if(dead) listObjects[0].skin = "images/deadHead.svg";
 	checkAttacking();
 	updateVel();
 	updateCollisions();

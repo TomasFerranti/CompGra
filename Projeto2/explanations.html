@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> Hollow Knight </title>
+<link rel="stylesheet" href="styles2.css">
+</head>
+<body>
+
+<h1> Explicação das mecânicas </h1>
+<h3>Algoritmo de intersecção</h3>
+<p>Para realizar o campo de visão entre monstros e o personagem, é verificado a interseção entre este segmento de reta e todos os outros do desenho.</p>
+
+<p>O algoritmo de intersecção utilizado consiste de simplesmente resolver a determinante do sistema e verificar se há solução ou não.</p>
+<h3>Inserção de desenhos e imagens no SVG</h3>
+<p>Para inserir elementos no SVG, foram usadas duas maneiras: inserindo um <b>path</b> ou uma <b>imagem SVG</b>.</p>
+<p> Inserir um path consiste de montar uma string descrevendo o objeto previamente e adicionar à tag SVG do HTML.</p>
+<p> Já para inserir uma imagem SVG você especifica localização da imagem, largura/altura e sua origem. Depois disso, adiciona ela semelhantemente ao HTML. </p>
+<p> Ambas maneiras acompanham um ID na hora da inserção, que é usado para removê-los e adicionar uma nova versão atualizada</p>
+<h3>Entrada do usuário</h3>
+<p> Um problema interessante do trabalho foi descobrir uma maneira de como detectar se o usuário está apertando duas teclas ao mesmo tempo.</p>
+<p> Após pesquisar sobre maneiras de fazer isso, encontrei uma relativamente fácil: <b>keydown</b> e <b>keyup</b>.</p>
+<p> A função keydown já conhecida emite o ID de qualquer tecla pressionada, mas o interessante é a keyup, que quando uma tecla é solta, ela também retorna o ID dessa tecla.</p>
+<p> Com isso foi possível montar um dicionário de teclas pressionadas facilitando o processamento</p>
+<h3>Algoritmo de colisão</h3>
+<p> O algoritmo de colisão usado recebe dois objetos retangulares paralelos, e fornece como saída se está havendo colisão e qual o vetor com o menor módulo que, quando adicionado à posição de um desses retângulos, não haverá mais colisão.</p>
+<h3>Desenhos no InkScape</h3>
+<p> Como o tema do trabalho envolvia SVG, decidi fazer cada animação com apenas um frame desenhado na plataforma InkScape.</p>
+<p> Cada desenho demorava em torno de 30 minutos para fazer, logo animei somente o personagem principal. </p>
+<h3>Animação</h3>
+<p> A animação é totalmente analítica, isto é, analiso os parâmetros do objeto e decido qual "foto" ele vai ser naquele momento da animação.</p>
+
+</script>
+
+</body>
+</html>
