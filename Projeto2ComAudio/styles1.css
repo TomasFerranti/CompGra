@@ -1,0 +1,17 @@
+#center {
+  background-color: grey;
+  display: table;
+  margin: 0 auto;
+  border: 3px solid black;
+  height: 700px;
+  width: 800px;
+  padding-left:15px;
+  padding-right:15px;
+}
+
+#mainSvg {
+  border: 3px solid white;
+  width: 800px;
+  height: 600px;
+}
+
