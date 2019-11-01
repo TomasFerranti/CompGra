@@ -223,12 +223,6 @@ $("body").keyup(function (event) {
 {
 	var listObjects = [];
 	
-	//Knight
-	listObjects.push(new Objeto([40,80],false,[6000,450],false,false));
-	
-	//Weapon
-	listObjects.push(new Objeto([80,80],false,[400,470],false,false));
-	
 	//Some functions to make the creation of objects easier
 	function ground(x,y,width,height,color){
 		object = new Objeto([width,height],true,[x,y],false,false);
@@ -267,6 +261,12 @@ $("body").keyup(function (event) {
 		listObjects.push(object);
 		return;
 	};
+	
+	//Knight
+	listObjects.push(new Objeto([40,80],false,[400,450],false,false));
+	
+	//Weapon
+	listObjects.push(new Objeto([80,80],false,[400,470],false,false));
 	
 	ground(-500,550,2300,50,"e1a95f");
 	breakableGround(-400,0,400,550,"e1a95f",1);
