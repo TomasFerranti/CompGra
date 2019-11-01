@@ -136,10 +136,7 @@ var keys = {
 	c: false
 };
 
-var music = document.getElementById("music");
-var currentMusic = document.getElementById("currentMusic");
 $("body").keydown(function (event) {
- music.play();
  var buttom = event.keyCode;
  if(!dead){
 	 //left code = 37
@@ -535,9 +532,6 @@ function updateCollisions(){
 				//Bosses activator
 				if(listObjects[i].type=="bossActivator1"){
 					var object = new Objeto([240,200],false,[listObjects[i].pos[0]+200,0],true,1);
-					currentMusic.src = "music/boss.mp3";
-					music.load();
-					music.play();
 					object.type = "vengeflyKing";
 					object.skin = "images/vengeflyKing.svg";
 					object.hp = 20;
@@ -550,9 +544,6 @@ function updateCollisions(){
 					var object = new Objeto([200,50],false,[400,250],false,false);
 					object.skin = "images/theEnd.svg";
 					listObjects.push(object);
-					currentMusic.src = "music/queenGardens.mp3";
-					music.load();
-					music.play();
 				};
 				
 				//Removing
