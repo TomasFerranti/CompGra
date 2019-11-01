@@ -582,6 +582,9 @@ function updateCollisions(){
 			intervalResetInvulnerability = setInterval(resetInvulnerability,618);
 		};
 	};	
+	if(flagInAir){
+		listObjects[0].canJump = false;
+	};
 	
 	//Collision between enemies and objects
 	for(j=2;j<listObjects.length;j++){
