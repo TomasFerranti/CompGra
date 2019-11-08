@@ -1,10 +1,3 @@
-// WebGL - Fundamentals
-// from https://webglfundamentals.org/webgl/webgl-fundamentals.html
-
-
-  /* eslint no-console:0 consistent-return:0 */
-"use strict";
-
 function createShader(gl, type, source) {
   var shader = gl.createShader(type);
   gl.shaderSource(shader, source);
@@ -61,9 +54,13 @@ function main() {
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
   var positions = [
-    0, 0,
-    0, 0.5,
-    0.7, 0,
+    -0.5, 0.5,
+    -0.5, -0.5,
+	0.5, -0.5,
+	-0.5, 0.5,
+	0.5, -0.5,
+	0.5, 0.5
+	
   ];
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
 
@@ -93,14 +90,14 @@ function main() {
   var type = gl.FLOAT;   // the data is 32bit floats
   var normalize = false; // don't normalize the data
   var stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
-  var offset = 0;        // start at the beginning of the buffer
+  var offset = false;        // start at the beginning of the buffer
   gl.vertexAttribPointer(
       positionAttributeLocation, size, type, normalize, stride, offset);
 
   // draw
   var primitiveType = gl.TRIANGLES;
-  var offset = 0;
-  var count = 3;
+  var offset = false;
+  var count = 6;
   gl.drawArrays(primitiveType, offset, count);
 }
 
