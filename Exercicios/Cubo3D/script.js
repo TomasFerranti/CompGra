@@ -1,104 +1,248 @@
-function createShader(gl, type, source) {
-  var shader = gl.createShader(type);
-  gl.shaderSource(shader, source);
-  gl.compileShader(shader);
-  var success = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
-  if (success) {
-    return shader;
-  }
+var gl;
+var shaderProgram;
+var cuboVertexPositionBuffer;
+var cuboVertexColorBuffer;
+var cuboVertexIndexBuffer;
 
-  console.log(gl.getShaderInfoLog(shader));
-  gl.deleteShader(shader);
+
+var mMatrix = mat4.create();
+var mMatrixPilha = [];
+var pMatrix = mat4.create();
+var vMatrix = mat4.create();
+
+var rCubo = 0;
+
+var ultimo = 0;
+
+// Iniciar o ambiente quando a página for carregada
+$(function(){
+	iniciaWebGL();
+});
+
+// Iniciar o ambiente
+function iniciaWebGL(){
+	var canvas = $('#licao01-canvas')[0];
+	iniciarGL(canvas); // Definir como um canvas 3D
+	iniciarShaders();  // Obter e processar os Shaders
+	iniciarBuffers();  // Enviar o triângulo e quadrado na GPU
+	iniciarAmbiente(); // Definir background e cor do objeto
+	tick();
 }
 
-function createProgram(gl, vertexShader, fragmentShader) {
-  var program = gl.createProgram();
-  gl.attachShader(program, vertexShader);
-  gl.attachShader(program, fragmentShader);
-  gl.linkProgram(program);
-  var success = gl.getProgramParameter(program, gl.LINK_STATUS);
-  if (success) {
-    return program;
-  }
-
-  console.log(gl.getProgramInfoLog(program));
-  gl.deleteProgram(program);
+function tick(){
+	requestAnimFrame(tick);
+	desenharCena();
+	animar();
 }
 
-function main() {
-  // Get A WebGL context
-  var canvas = document.getElementById("c");
-  var gl = canvas.getContext("webgl");
-  if (!gl) {
-    return;
-  }
-
-  // Get the strings for our GLSL shaders
-  var vertexShaderSource = document.getElementById("2d-vertex-shader").text;
-  var fragmentShaderSource = document.getElementById("2d-fragment-shader").text;
-
-  // create GLSL shaders, upload the GLSL source, compile the shaders
-  var vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
-  var fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
-
-  // Link the two shaders into a program
-  var program = createProgram(gl, vertexShader, fragmentShader);
-
-  // look up where the vertex data needs to go.
-  var positionAttributeLocation = gl.getAttribLocation(program, "a_position");
-
-  // Create a buffer and put three 2d clip space points in it
-  var positionBuffer = gl.createBuffer();
-
-  // Bind it to ARRAY_BUFFER (think of it as ARRAY_BUFFER = positionBuffer)
-  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-
-  var positions = [
-    -0.5, 0.5,
-    -0.5, -0.5,
-	0.5, -0.5,
-	-0.5, 0.5,
-	0.5, -0.5,
-	0.5, 0.5
-	
-  ];
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
-
-  // code above this line is initialization code.
-  // code below this line is rendering code.
-
-  webglUtils.resizeCanvasToDisplaySize(gl.canvas);
-
-  // Tell WebGL how to convert from clip space to pixels
-  gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-
-  // Clear the canvas
-  gl.clearColor(0, 0, 0, 0);
-  gl.clear(gl.COLOR_BUFFER_BIT);
-
-  // Tell it to use our program (pair of shaders)
-  gl.useProgram(program);
-
-  // Turn on the attribute
-  gl.enableVertexAttribArray(positionAttributeLocation);
-
-  // Bind the position buffer.
-  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-
-  // Tell the attribute how to get data out of positionBuffer (ARRAY_BUFFER)
-  var size = 2;          // 2 components per iteration
-  var type = gl.FLOAT;   // the data is 32bit floats
-  var normalize = false; // don't normalize the data
-  var stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
-  var offset = false;        // start at the beginning of the buffer
-  gl.vertexAttribPointer(
-      positionAttributeLocation, size, type, normalize, stride, offset);
-
-  // draw
-  var primitiveType = gl.TRIANGLES;
-  var offset = false;
-  var count = 6;
-  gl.drawArrays(primitiveType, offset, count);
+function iniciarGL(canvas){
+	try{
+		gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+		gl.viewportWidth = canvas.width;
+		gl.viewportHeight = canvas.height;
+	}catch(e){
+		if(!gl){
+			alert("Não pode inicializar WebGL, desculpe");
+		}			
+	}
 }
 
-main();
+function iniciarShaders(){
+	var vertexShader = getShader(gl, "#shader-vs");
+	var fragmentShader = getShader(gl, "#shader-fs");
+
+	shaderProgram = gl.createProgram();
+	gl.attachShader(shaderProgram, vertexShader);
+	gl.attachShader(shaderProgram, fragmentShader);
+	gl.linkProgram(shaderProgram);
+
+	if(!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)){
+		alert("Não pode inicializar shaders");
+	}
+
+	gl.useProgram(shaderProgram);
+
+	shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
+	gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+
+	shaderProgram.vertexColorAttribute = gl.getAttribLocation(shaderProgram, "aVertexColor");
+	gl.enableVertexAttribArray(shaderProgram.vertexColorAttribute);
+
+	shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
+	shaderProgram.vMatrixUniform = gl.getUniformLocation(shaderProgram, "uVMatrix");
+	shaderProgram.mMatrixUniform = gl.getUniformLocation(shaderProgram, "uMMatrix");
+}
+
+function getShader(gl, id){
+	var shaderScript = $(id)[0];
+	if(!shaderScript){
+		return null;
+	}
+
+	var str = "";
+	var k = shaderScript.firstChild;
+	while(k){
+		if(k.nodeType == 3)
+		str += k.textContent;
+		k = k.nextSibling;
+	}
+
+	var shader;
+	if(shaderScript.type == "x-shader/x-fragment"){
+		shader = gl.createShader(gl.FRAGMENT_SHADER);
+	}else if(shaderScript.type == "x-shader/x-vertex"){
+		shader = gl.createShader(gl.VERTEX_SHADER);
+	}else{
+		return null;
+	}
+
+	gl.shaderSource(shader, str);
+	gl.compileShader(shader);
+
+	if(!gl.getShaderParameter(shader, gl.COMPILE_STATUS)){
+		alert(gl.getShaderInfoLog(shader));
+		return null;
+	}
+
+	return shader;
+}
+
+function iniciarBuffers(){	
+	cuboVertexPositionBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, cuboVertexPositionBuffer);
+	vertices = [
+	// Front face
+	-1.0, -1.0,  1.0,
+	1.0, -1.0,  1.0,
+	1.0,  1.0,  1.0,
+	-1.0,  1.0,  1.0,
+
+	// Back face
+	-1.0, -1.0, -1.0,
+	-1.0,  1.0, -1.0,
+	1.0,  1.0, -1.0,
+	1.0, -1.0, -1.0,
+
+	// Top face
+	-1.0,  1.0, -1.0,
+	-1.0,  1.0,  1.0,
+	1.0,  1.0,  1.0,
+	1.0,  1.0, -1.0,
+
+	// Bottom face
+	-1.0, -1.0, -1.0,
+	1.0, -1.0, -1.0,
+	1.0, -1.0,  1.0,
+	-1.0, -1.0,  1.0,
+
+	// Right face
+	1.0, -1.0, -1.0,
+	1.0,  1.0, -1.0,
+	1.0,  1.0,  1.0,
+	1.0, -1.0,  1.0,
+
+	// Left face
+	-1.0, -1.0, -1.0,
+	-1.0, -1.0,  1.0,
+	-1.0,  1.0,  1.0,
+	-1.0,  1.0, -1.0
+	];
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+	cuboVertexPositionBuffer.itemSize = 3;
+	cuboVertexPositionBuffer.numItems = 4;
+
+	cuboVertexColorBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, cuboVertexColorBuffer);
+	cores = [
+	[1.0, 0.0, 0.0, 1.0],     // Frente
+	[1.0, 1.0, 0.0, 1.0],     // Trás
+	[0.0, 1.0, 0.0, 1.0],     // Topo
+	[1.0, 0.5, 0.5, 1.0],     // Base
+	[1.0, 0.0, 1.0, 1.0],     // Direita
+	[0.0, 0.0, 1.0, 1.0]      // Esquerda
+	];
+	var coresReplicadas = [];
+	for (var i in cores) {
+		var cor = cores[i];
+		for (var j=0; j < 4; j++) {
+			coresReplicadas = coresReplicadas.concat(cor);
+		}
+	}
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(coresReplicadas), gl.STATIC_DRAW);
+	cuboVertexColorBuffer.itemSize = 4;
+	cuboVertexColorBuffer.numItems = 24;
+
+	cuboVertexIndexBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cuboVertexIndexBuffer);
+	var indices = [
+	0, 1, 2,      0, 2, 3,    // Frente
+	4, 5, 6,      4, 6, 7,    // Trás
+	8, 9, 10,     8, 10, 11,  // Topo
+	12, 13, 14,   12, 14, 15, // Base
+	16, 17, 18,   16, 18, 19, // Direita
+	20, 21, 22,   20, 22, 23  // Esquerda
+	]
+	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+	cuboVertexIndexBuffer.itemSize = 1;
+	cuboVertexIndexBuffer.numItems = 36;
+}
+
+function iniciarAmbiente(){
+	gl.clearColor(0.0, 0.0, 0.0, 1.0);
+	gl.enable(gl.DEPTH_TEST);
+}
+
+function desenharCena(){
+	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+	mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
+	mat4.identity(mMatrix);
+	mat4.identity(vMatrix);
+
+	// Desenhando o Quadrado
+	mat4.translate(mMatrix, [0, 0.0, -7]);
+
+	mPushMatrix();
+	mat4.rotate(mMatrix, degToRad(rCubo),[1,1,1]);
+
+	gl.bindBuffer(gl.ARRAY_BUFFER, cuboVertexPositionBuffer);
+	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cuboVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+	gl.bindBuffer(gl.ARRAY_BUFFER, cuboVertexColorBuffer);
+	gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, cuboVertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
+	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cuboVertexIndexBuffer);
+	setMatrixUniforms();
+	gl.drawElements(gl.TRIANGLES, cuboVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT,0);
+	mPopMatrix();
+}
+
+function setMatrixUniforms(){
+	gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
+	gl.uniformMatrix4fv(shaderProgram.vMatrixUniform, false, vMatrix);
+	gl.uniformMatrix4fv(shaderProgram.mMatrixUniform, false, mMatrix);
+}
+
+// o 'var ultimo = 0' está no topo (todos as vars globais estão juntas)
+function animar(){
+	var agora = new Date().getTime();
+	if(ultimo != 0){
+		var diferenca = agora-ultimo;
+		rCubo      += ((75*diferenca)/1000.0) % 360.0;
+	}
+	ultimo = agora;
+}
+
+function mPushMatrix(){
+	var copy = mat4.create();
+	mat4.set(mMatrix, copy);
+	mMatrixPilha.push(copy);
+}
+
+function mPopMatrix(){
+	if(mMatrixPilha.length == 0){
+		throw "inválido popMatrix!";
+	}
+	mMatrix = mMatrixPilha.pop();
+}
+
+function degToRad(graus){
+	return graus * Math.PI / 180;
+}
