@@ -404,7 +404,6 @@ function checkAttacking(){
 //Physics and user input
 var observerX = 0;
 var totalObserverX = 0;
-var last = 0;
 function updateVel() {	
 	//Enemies speed
 	updateEnemies();
@@ -452,18 +451,11 @@ function updateVel() {
 		};
 	};
 	
-	var now = new Date().getTime();
-	var difference = 0;
-	if(last != 0){
-		difference = now-last;
-	}
-	last = now;
-	
 	observerX = listObjects[0].pos[0] - 400;
 	//Positions update with the speed vector
 	for(var i=0; i<listObjects.length; i++){
-		listObjects[i].pos[0] += (0.15)*difference*listObjects[i].vel[0];
-		listObjects[i].pos[1] += (0.15)*difference*listObjects[i].vel[1];
+		listObjects[i].pos[0] = listObjects[i].pos[0] + listObjects[i].vel[0];
+		listObjects[i].pos[1] = listObjects[i].pos[1] + listObjects[i].vel[1];
 	};
 	for(var i=0; i<listObjects.length; i++){
 		listObjects[i].pos[0] = listObjects[i].pos[0] - observerX;
