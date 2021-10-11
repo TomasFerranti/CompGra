@@ -404,6 +404,7 @@ function checkAttacking(){
 //Physics and user input
 var observerX = 0;
 var totalObserverX = 0;
+var coefSpeed = 2.5;
 function updateVel() {	
 	//Enemies speed
 	updateEnemies();
@@ -412,7 +413,7 @@ function updateVel() {
 	if(keys["left"]) listObjects[0].vel[0] = -1.5;
 	else if(keys["right"]) listObjects[0].vel[0] = 1.5;
 	else{
-		listObjects[0].vel[0] = 0.9*listObjects[0].vel[0];
+		listObjects[0].vel[0] = 1/coefSpeed*0.9*listObjects[0].vel[0];
 		if(Math.abs(listObjects[0].vel[0])<0.01) listObjects[0].vel[0] = 0;
 	};
 	
@@ -438,7 +439,7 @@ function updateVel() {
 	};
 	
 	//Gravity
-	if(listObjects[0].vel[1]<3) listObjects[0].vel[1] += 0.05;
+	if(listObjects[0].vel[1]<3) listObjects[0].vel[1] += coefSpeed*0.05;
 	else listObjects[0].vel[1] = 3;
 	
 	//Dash speed
@@ -454,8 +455,8 @@ function updateVel() {
 	observerX = listObjects[0].pos[0] - 400;
 	//Positions update with the speed vector
 	for(var i=0; i<listObjects.length; i++){
-		listObjects[i].pos[0] = listObjects[i].pos[0] + listObjects[i].vel[0];
-		listObjects[i].pos[1] = listObjects[i].pos[1] + listObjects[i].vel[1];
+		listObjects[i].pos[0] = listObjects[i].pos[0] + coefSpeed*listObjects[i].vel[0];
+		listObjects[i].pos[1] = listObjects[i].pos[1] + coefSpeed*listObjects[i].vel[1];
 	};
 	for(var i=0; i<listObjects.length; i++){
 		listObjects[i].pos[0] = listObjects[i].pos[0] - observerX;
@@ -828,9 +829,11 @@ function draw() {
 	for(var i=0; i<lifeMasks.length; i++){
 		lifeMasks[i].draw();
 	};
+
+	requestAnimationFrame(draw);
 };
 
 
 
 //Calling the function draw every 5ms
-setInterval(draw,5);
+requestAnimationFrame(draw);
